@@ -7,6 +7,17 @@ use Livewire\Component;
 
 class BoardingHouse extends Component
 {
+
+    public function mount($id)
+    {
+        // dd($id);
+    }
+
+    public function back()
+    {
+        return $this->redirect('/', navigate: true);
+    }
+
     #[Layout('components.layouts.userAuth')]
     public function render()
     {

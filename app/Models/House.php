@@ -12,6 +12,7 @@ class House extends Model
     use HasFactory, SoftDeletes, UUID;
 
     protected $fillable = [
+        'userId',
         'houseName',
         'contact',
         'address',
@@ -21,4 +22,14 @@ class House extends Model
         'longitude',
         'latitude'
     ];
+
+    public function getNearbyAttractionInOrder()
+    {
+        return $this->hasMany(NearbyAttraction::class, 'houseId', 'id')->orderBy('order', 'ASC');
+    }
+
+    public function getNearbyAttractions()
+    {
+        return $this->hasMany(NearbyAttraction::class, 'houseId', 'id');
+    }
 }

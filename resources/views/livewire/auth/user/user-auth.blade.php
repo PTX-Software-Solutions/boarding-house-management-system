@@ -51,11 +51,13 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit"
+                                            class="btn btn-primary btn-user btn-block 
+                                        d-flex justify-content-center align-items-center">
                                             <div wire:loading wire:loading.class="opacity-50 disabled"
-                                                wire:loading.attr="disabled" wire:target="login" class="spinner-border"
-                                                role="status">
-                                                <span class="sr-only">Loading...</span>
+                                                wire:loading.attr="disabled" wire:target="login"
+                                                class="spinner-border mx-2" role="status">
+                                                <span class="sr-only mx-2">Loading...</span>
                                             </div>
                                             {{ __('Login') }}
                                         </button>

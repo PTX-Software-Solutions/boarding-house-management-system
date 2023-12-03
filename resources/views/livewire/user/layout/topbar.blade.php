@@ -168,7 +168,69 @@
 
             <div class="topbar-divider d-none d-sm-block"></div>
 
+            {{-- <!-- Nav Item - User Information -->
+            <li class="nav-item" x-data="{ open: false }">
+                <a @click.prevent="open = ! open" class="nav-link">
+                    <span
+                        class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->firstName ?? '' }}</span>
+                    <figure class="img-profile rounded-circle avatar font-weight-bold" data-initial=""></figure>
+                </a>
+
+                <div x-show="open" @click.outside="open = false" class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Profile') }}
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Settings') }}
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Activity Log') }}
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
+                        wire:click="">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Logout') }}
+                    </a>
+                </div>
+
+            </li> --}}
+
             <!-- Nav Item - User Information -->
+            <li id="parentDiv" class="nav-item dropdown no-arrow">
+                <a id="toggleButton" class="nav-link dropdown-toggle" href="#" role="button"
+                    aria-expanded="false">
+                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->firstName }}</span>
+                    <figure class="img-profile rounded-circle avatar font-weight-bold" data-initial=""></figure>
+                </a>
+
+                <div id="contentsss" class="dropdown-menu dropdown-menu-right shadow">
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Profile') }}
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Settings') }}
+                    </a>
+                    <a class="dropdown-item" href="javascript:void(0)">
+                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Activity Log') }}
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal"
+                        wire:click="">
+                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                        {{ __('Logout') }}
+                    </a>
+                </div>
+
+            </li>
+
+            {{-- <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow {{ $topBar ? 'show' : '' }}">
                 <a class="nav-link dropdown-toggle" href="#" role="button"
                     aria-expanded="{{ $topBar ? 'true' : 'false' }}" wire:click="onChangeUserOption">
@@ -197,7 +259,7 @@
                     </a>
                 </div>
 
-            </li>
+            </li> --}}
 
             <!-- Logout Modal-->
             <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog"
@@ -227,3 +289,38 @@
     <!-- End of Topbar -->
 
 </div>
+
+<script data-navigate-track>
+    document.addEventListener('livewire:init', () => {
+        var isOpen = false;
+        var toggleButton = document.getElementById('toggleButton');
+        var content = document.getElementById('contentsss');
+        var parentDiv = document.getElementById('parentDiv');
+
+        parentDiv.addEventListener('click', function () {
+
+            if (!isOpen) {
+                isOpen = true;
+                content.classList.add("show");
+                parentDiv.classList.add("show");
+                toggleButton.setAttribute("aria-expanded", "true");
+            } else {
+                isOpen = false;
+                content.classList.remove("show");
+                parentDiv.classList.remove("show");
+                toggleButton.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        document.addEventListener('click', function (event) {
+            var isClickInside = parentDiv.contains(event.target) || content.contains(event.target);
+
+            if (!isClickInside && isOpen) {
+                isOpen = false;
+                content.classList.remove("show");
+                parentDiv.classList.remove("show");
+                toggleButton.setAttribute("aria-expanded", "false");
+            }
+        });
+    })
+</script>

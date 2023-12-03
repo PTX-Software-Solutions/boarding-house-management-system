@@ -2,10 +2,13 @@
 
 namespace App\Livewire\Auth\User;
 
+use App\Enums\UserTypeEnums;
 use App\Livewire\Forms\User\RegistrationForm;
 use App\Models\User;
+use App\Models\UserType;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Rule;
@@ -25,15 +28,14 @@ class UserRegister extends Component
     #[Rule('required')]
     public $lastName;
 
-    #[Rule('required|email')]
+    #[Rule('required|email|unique:users')]
     public $email;
 
-    // #[Rule('required|min:6|required_with:confirmPassword|same:confirmPassword')]
-    #[Rule('required')]
+    #[Rule('required|min:6|confirmed')]
     public $password;
 
     #[Rule('required')]
-    public $confirmPassword;
+    public $password_confirmation;
 
     #[Rule('nullable')]
     #[Rule(
@@ -56,12 +58,16 @@ class UserRegister extends Component
 
     public function uploadImage()
     {
-        $randomName = Str::random(20);
-        $extension = $this->profileImage->getClientOriginalExtension();
-        $newName = $randomName . '.' . $extension;
+        if ($this->profileImage) {
+            $randomName = Str::random(20);
+            $extension = $this->profileImage->getClientOriginalExtension();
+            $newName = $randomName . '.' . $extension;
 
-
-        $this->profileImage->storeAs('public/images', $newName);
+            $this->profileImage->storeAs('public/images', $newName);
+        } else {
+            // Default Image Name
+            $newName = env('DEFAULT_IMAGE_NAME');
+        }
 
         return $newName;
     }
@@ -76,21 +82,29 @@ class UserRegister extends Component
     {
         $this->validate();
 
+        DB::beginTransaction();
 
         try {
+
+            // Default registration user type
+            $userDefaultType = UserType::where('name', UserTypeEnums::USER)->first();
+
             $user = User::create([
                 'firstName'     => $this->firstName,
                 'lastName'      => $this->lastName,
                 'email'         => $this->email,
                 'password'      => Hash::make($this->password),
+                'userTypeId'    => $userDefaultType->id,
                 'profileImage'  => $this->uploadImage()
             ]);
 
             Auth::guard('web')->login($user);
-            
             $this->dispatch('success-register');
+
+            DB::commit();
         } catch (Exception $e) {
             Log::debug($e);
+            DB::rollBack();
         }
     }
 

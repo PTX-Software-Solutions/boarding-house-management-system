@@ -1,17 +1,22 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
+use App\Livewire\Admin\BoardingHouse as AdminBoardingHouse;
+use App\Livewire\Admin\BoardingHouseForm;
+use App\Livewire\Admin\BoardingHouseRoom;
+use App\Livewire\Admin\BoardingHouseRoomForm;
+use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Auth\Admin\AdminLogin;
+use App\Livewire\Auth\Management\ManagementLogin;
 use App\Livewire\Auth\User\UserAuth;
 use App\Livewire\Auth\User\UserRegister;
-use App\Livewire\Dashboard\Dashboard;
 use App\Livewire\Houses\HousesForm;
 use App\Livewire\Houses\HousesTable;
+use App\Livewire\Management\Dashboard;
 use App\Livewire\User\BoardingHouse;
 use App\Livewire\User\History;
 use App\Livewire\User\Home;
 use App\Livewire\User\Reservation;
 use App\Livewire\User\RoomDetails;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,68 +30,47 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// ADMIN GUEST
+Route::group([
+    'middleware' => ['guest.admin'],
+    'prefix' => 'admin'
+], function () {
+    Route::get('/login', AdminLogin::class)->name('admin.login');
+});
 
-// Auth::routes();
+// ADMIN AUTH
+Route::group([
+    'middleware' => ['auth.admin'],
+    'prefix' => 'admin',
+], function () {
+    Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
 
-// // ADMIN GUEST
-// Route::group([
-//     'middleware' => ['guest.admin'],
-//     'prefix' => 'admin'
-// ], function () {
-//     // Route::get('/login', AdminAuth::class)->name('admin.login');
-// });
+    Route::group([
+        'prefix' => 'boarding-houses'
+    ], function () {
+        Route::get('/', AdminBoardingHouse::class)->name('admin.boarding-house');
+        Route::get('/create', BoardingHouseForm::class)->name('admin.boarding.house.create');
+        Route::get('/edit/{id}', BoardingHouseForm::class)->name('admin.boarding.house.edit');
+        Route::get('/{id}/rooms', BoardingHouseRoom::class)->name('admin.boarding-house.rooms');
+        Route::get('/{id}/rooms/create', BoardingHouseRoomForm::class)->name('admin.boarding-house.rooms.create');
+    });
+});
 
-// // ADMIN AUTH
-// Route::group([
-//     'middleware' => ['auth.admin'],
-//     'prefix' => 'admin',
-// ], function () {
-//     // Route::get('/home', Dashboard::class)->name('home');
-//     // Route::get('/boarding-house', HousesTable::class)->name('boarding.house');
-//     // Route::get('/boarding-house/create', HousesForm::class)->name('boarding.house.form.create');
-//     // Route::get('boarding-house/edit/{id}', HousesForm::class)->name('boarding.house.form.edit');
-//     // Route::get('/reservation', Reservation::class)->name('reservation');
-// });
+// MANAGEMENT GUEST
+Route::group([
+    'middleware' => ['guest.management'],
+    'prefix'     => 'management',
+], function () {
+    Route::get('/login', ManagementLogin::class)->name('management.login');
+});
 
-
-// // MANAGEMENT GUEST
-// Route::group([
-//     'middleware' => ['guest.management'],
-//     'prefix'     => 'management',
-// ], function () {
-//     // Route::get('/login', ManagementAuth::class)->name('management.login');
-//     // Route::get('/register', ManagementAuth::class)->name('management.register');
-// });
-
-// Route::get('/home', Dashboard::class)->name('home');
-// Route::get('/boarding-house', HousesTable::class)->name('boarding.house');
-// Route::get('/boarding-house/create', HousesForm::class)->name('boarding.house.form.create');
-// Route::get('boarding-house/edit/{id}', HousesForm::class)->name('boarding.house.form.edit');
-// Route::get('/reservation', Reservation::class)->name('reservation');
-
-// Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
-// Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
-// Route::get('/about', function () {
-//     return view('about');
-// })->name('about');
-
-// // MANAGEMENT AUTH
-// Route::group([
-//     'middleware' => ['auth.management'],
-//     'prefix'     => 'management',
-// ], function () {
-//     // Route::get('/home', Dashboard::class)->name('home');
-//     // Route::get('/boarding-house', HousesTable::class)->name('boarding.house');
-//     // Route::get('/boarding-house/create', HousesForm::class)->name('boarding.house.form.create');
-//     // Route::get('boarding-house/edit/{id}', HousesForm::class)->name('boarding.house.form.edit');
-//     // Route::get('/reservation', Reservation::class)->name('reservation');
-// });
-
-
+// MANAGEMENT AUTH
+Route::group([
+    'middleware' => ['auth.management'],
+    'prefix'     => 'management',
+], function () {
+    Route::get('/dashboard', Dashboard::class)->name('management.dashboard');
+});
 
 // USER GUEST
 Route::group([

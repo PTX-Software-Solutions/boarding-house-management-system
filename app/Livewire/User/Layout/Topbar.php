@@ -2,6 +2,8 @@
 
 namespace App\Livewire\User\Layout;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Component;
@@ -16,10 +18,10 @@ class Topbar extends Component
         $this->topBar = !$this->topBar;
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
-
+        Auth::guard('web')->logout();
+        $request->session()->regenerateToken();
         return $this->redirect('/');
     }
 

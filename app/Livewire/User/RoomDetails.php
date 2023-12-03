@@ -8,6 +8,16 @@ use Livewire\Component;
 class RoomDetails extends Component
 {
 
+    public function mount($id, $roomId)
+    {
+        // dd($id, $roomId);
+    }
+
+    public function back()
+    {
+
+    }
+
     #[Layout('components.layouts.userAuth')]
     public function render()
     {

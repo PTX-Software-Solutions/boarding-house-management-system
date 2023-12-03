@@ -66,9 +66,9 @@
 
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
-                                            wire:model="confirmPassword" placeholder="{{ __('Confirm Password') }}">
+                                            wire:model="password_confirmation" placeholder="{{ __('Confirm Password') }}">
                                         <div>
-                                            @error('confirmPassword')
+                                            @error('password_confirmation')
                                                 <p class="text-danger">{{ $message }}</p>
                                             @enderror
                                         </div>
@@ -79,7 +79,6 @@
                                             wire:model="profileImage">
                                         <div wire:loading wire:target="profileImage">Uploading...</div>
                                         @if ($profileImage)
-                                            {{-- @dd($profileImage) --}}
                                             <div
                                                 class="container d-flex align-items-center 
                                                 justify-content-center my-2">

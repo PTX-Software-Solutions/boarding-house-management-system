@@ -2,17 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Casts\Attribute;
+use App\Enums\UserTypeEnums;
+use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, UUID;
 
     /**
      * The attributes that are mass assignable.
@@ -24,7 +23,8 @@ class User extends Authenticatable
         'lastName',
         'email',
         'password',
-        'profileImage'
+        'profileImage',
+        'userTypeId'
     ];
 
     protected $table = 'users';
@@ -61,43 +61,23 @@ class User extends Authenticatable
         return "{$this->firstName} {$this->lastName}";
     }
 
-    // public function generateNewProfileImage($value)
-    // {
+    public function userType(): HasOne
+    {
+        return $this->hasOne(UserType::class, 'id', 'userTypeId');
+    }
 
-    //     dd($value);
-    //     $randomName = Str::random(20);
-    //     $extension = $value->getClientOriginalExtension();
-    //     $newName = $randomName . '.' . $extension;
+    public function isUser()
+    {
+        return $this->userType->name === UserTypeEnums::USER;
+    }
 
-    //     Log::debug($newName);
+    public function isAdmin()
+    {
+        return $this->userType->name === UserTypeEnums::ADMIN;
+    }
 
-    //     return $newName;
-    // }
-
-    // protected function profileImage(): Attribute {
-    //     return Attribute::make(
-    //         get: fn(string $value) => ucfirst($value),
-    //         set: fn(string $value) => $value ? $this->generateNewProfileImage($value) : null
-    //     );
-    // }
-
-    // public function setProfileImageAttribute($value)
-    // {
-    //     if ($this->attributes['profileImage']) {
-    //         $this->attributes['profileImage'] = $this->generateNewProfileImage($value);
-    //     }
-    // }
-
-    // public function storeImage
-
-    // /**
-    //  * Set the user's password.
-    //  *
-    //  * @param string $value
-    //  * @return void
-    //  */
-    // public function setPasswordAttribute($value)
-    // {
-    //     $this->attributes['password'] = bcrypt($value);
-    // }
+    public function isManagement()
+    {
+        return $this->userType->name === UserTypeEnums::MANAGEMENT;
+    }
 }

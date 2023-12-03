@@ -3,6 +3,7 @@
 namespace App\Livewire\Auth\User;
 
 use App\Livewire\User\Home;
+use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -34,6 +35,22 @@ class UserAuth extends Component
         $this->validate();
 
         try {
+
+            $user = User::where('email', $this->email)->first();
+
+            // Check user does exists
+            if (is_null($user)) {
+                $this->addError('login', 'Invalid user');
+                return;
+            }
+
+            // Check user TYPE: USER
+            if (!$user->isUser()) {
+                $this->addError('login', 'Unauthorized user');
+                return;
+            }
+
+            // Authenticate the user
             if (Auth::guard('web')->attempt([
                 'email' => $this->email,
                 'password' => $this->password

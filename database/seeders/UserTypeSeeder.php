@@ -31,7 +31,6 @@ class UserTypeSeeder extends Seeder
 
 
         foreach ($datas as $data) {
-            Log::debug($data);
             UserType::create([
                 'name' => $data['name']
             ]);
