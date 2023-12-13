@@ -5,6 +5,8 @@ use App\Livewire\Admin\BoardingHouseForm;
 use App\Livewire\Admin\BoardingHouseRoom;
 use App\Livewire\Admin\BoardingHouseRoomForm;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\UserForm;
+use App\Livewire\Admin\Users;
 use App\Livewire\Auth\Admin\AdminLogin;
 use App\Livewire\Auth\Management\ManagementLogin;
 use App\Livewire\Auth\User\UserAuth;
@@ -53,6 +55,15 @@ Route::group([
         Route::get('/edit/{id}', BoardingHouseForm::class)->name('admin.boarding.house.edit');
         Route::get('/{id}/rooms', BoardingHouseRoom::class)->name('admin.boarding-house.rooms');
         Route::get('/{id}/rooms/create', BoardingHouseRoomForm::class)->name('admin.boarding-house.rooms.create');
+        Route::get('/{id}/rooms/edit/{roomId}', BoardingHouseRoomForm::class)->name('admin.boarding-house.rooms.edit');
+    });
+
+    Route::group([
+        'prefix' => 'users'
+    ], function () {
+        Route::get('/', Users::class)->name('admin.users');
+        Route::get('/create', UserForm::class)->name('admin.users.create');
+        Route::get('/edit/{id}', UserForm::class)->name('admin.users.edit');
     });
 });
 

@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('statuses', function (Blueprint $table) {
+        Schema::create('house_images', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->bigInteger('serial_id');
-            $table->string('name');
+            $table->uuid('houseId')->nullable(false);
+            $table->string('imageUrl');
+            $table->foreign('houseId')->references('id')->on('houses')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -25,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('statuses');
+        Schema::dropIfExists('house_images');
     }
 };

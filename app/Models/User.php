@@ -24,7 +24,8 @@ class User extends Authenticatable
         'email',
         'password',
         'profileImage',
-        'userTypeId'
+        'userTypeId',
+        'statusId'
     ];
 
     protected $table = 'users';
@@ -59,6 +60,11 @@ class User extends Authenticatable
         }
 
         return "{$this->firstName} {$this->lastName}";
+    }
+
+    public function status(): HasOne
+    {
+        return $this->hasOne(Status::class, 'id', 'statusId');
     }
 
     public function userType(): HasOne

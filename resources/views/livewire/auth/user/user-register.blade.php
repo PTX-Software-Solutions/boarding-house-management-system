@@ -66,7 +66,8 @@
 
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
-                                            wire:model="password_confirmation" placeholder="{{ __('Confirm Password') }}">
+                                            wire:model="password_confirmation"
+                                            placeholder="{{ __('Confirm Password') }}">
                                         <div>
                                             @error('password_confirmation')
                                                 <p class="text-danger">{{ $message }}</p>
@@ -75,24 +76,33 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="file" class="form-control form-control-user"
-                                            wire:model="profileImage">
-                                        <div wire:loading wire:target="profileImage">Uploading...</div>
-                                        @if ($profileImage)
-                                            <div
-                                                class="container d-flex align-items-center 
-                                                justify-content-center my-2">
-                                                <div class="form-control-user"
-                                                    style="width: 100px; height: 100px; 
-                                                    position: relative; overflow:hidden;">
-                                                    <img src="{{ $profileImage->temporaryUrl() }}"
-                                                        class="img-thumbnail rounded-circle"
-                                                        style="width: 100%; height: 100%; object-fit:cover; 
-                                                    position:absolute; top:0; left:0;"
-                                                        alt="">
-                                                </div>
+                                        <div x-data="{ uploading: false, progress: 0 }" x-on:livewire-upload-start="uploading = true"
+                                            x-on:livewire-upload-finish="uploading = false"
+                                            x-on:livewire-upload-error="uploading = false"
+                                            x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                            <input type="file" class="form-control form-control-user"
+                                                wire:model="profileImage">
+                                            <!-- Progress Bar -->
+                                            <div x-show="uploading">
+                                                <progress max="100" x-bind:value="progress"></progress>
                                             </div>
-                                        @endif
+                                            {{-- <div wire:loading wire:target="profileImage">Uploading...</div> --}}
+                                            @if ($profileImage)
+                                                <div
+                                                    class="container d-flex align-items-center 
+                                                justify-content-center my-2">
+                                                    <div class="form-control-user"
+                                                        style="width: 100px; height: 100px; 
+                                                    position: relative; overflow:hidden;">
+                                                        <img src="{{ $profileImage->temporaryUrl() }}"
+                                                            class="img-thumbnail rounded-circle"
+                                                            style="width: 100%; height: 100%; object-fit:cover; 
+                                                    position:absolute; top:0; left:0;"
+                                                            alt="">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        </div>
                                         <div>
                                             @error('profileImage')
                                                 <p class="text-danger">{{ $message }}</p>

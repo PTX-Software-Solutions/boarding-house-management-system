@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Enums\UserTypeEnums;
 use App\Models\DistanceTypes;
 use App\Models\House;
+use App\Models\HouseImage;
 use App\Models\NearbyAttraction;
 use App\Models\User;
 use Exception;
@@ -15,9 +16,13 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Str;
 
 class BoardingHouseForm extends Component
 {
+    use WithFileUploads;
+
     #[Rule('required', message: 'The home owner is required')]
     public $userId;
 
@@ -38,6 +43,15 @@ class BoardingHouseForm extends Component
 
     #[Rule('required')]
     public $zip = '';
+
+    #[Rule([
+        'uploadImage'   => 'nullable',
+        'uploadImage.*' => 'nullable|max:1024'
+    ], onUpdate: false)]
+    public $uploadImage;
+
+    public $oldImage = [];
+    public $isEditMode = false;
 
     public $longitude = 123.31; // default longitude of dumaguete city
     public $latitude = 9.31;    // default latitude of dumaguete city
@@ -94,8 +108,10 @@ class BoardingHouseForm extends Component
 
     public function edit($id): void
     {
-        $house = House::with(['getNearbyAttractionInOrder' => function ($query) {
-            $query->select('name', 'houseId', 'distance', 'distanceTypeId');
+        $house = House::with(['getNearbyAttractionInOrder' => function ($q1) {
+            $q1->select('name', 'houseId', 'distance', 'distanceTypeId');
+        }, 'getHousePhoto' => function ($q2) {
+            $q2->select('houseId', 'imageUrl');
         }])->findOrFail($id);
 
         $this->id = $house->id;
@@ -108,6 +124,7 @@ class BoardingHouseForm extends Component
         $this->zip = $house->zip;
         $this->longitude = $house->longitude;
         $this->latitude = $house->latitude;
+        $this->isEditMode = true;
 
         // Get the NearbyAttraction
         if (!$house->getNearbyAttractionInOrder->isEmpty()) {
@@ -117,6 +134,13 @@ class BoardingHouseForm extends Component
                     'distance' => $attraction->distance,
                     'distanceType' => $attraction->distanceTypeId
                 ];
+            }
+        }
+
+        // Get the House Photos
+        if (!$house->getHousePhoto->isEmpty()) {
+            foreach ($house->getHousePhoto  as $key => $housePhoto) {
+                $this->oldImage[$key] = $housePhoto->imageUrl;
             }
         }
     }
@@ -139,6 +163,23 @@ class BoardingHouseForm extends Component
         }
     }
 
+    public function uploadImage($image)
+    {
+        if ($image) {
+            $randomName = Str::random(20);
+            $extension = $image->getClientOriginalExtension();
+            $newName = $randomName . '.' . $extension;
+
+            // $image->storeAs('photos/client/', $newName, 's3');
+            $image->storeAs('public/images/', $newName);
+        } else {
+            // Default Image Name
+            $newName = env('DEFAULT_IMAGE_NAME');
+        }
+
+        return $newName;
+    }
+
     public function save()
     {
         $data = $this->validate();
@@ -148,7 +189,7 @@ class BoardingHouseForm extends Component
 
 
             if ($this->id) {
-                $bh = House::with('getNearbyAttractions')->findOrFail($this->id);
+                $bh = House::with('getNearbyAttractions', 'getHousePhoto')->findOrFail($this->id);
 
                 $bh->update([
                     'userId'    => $data['userId'],
@@ -168,19 +209,39 @@ class BoardingHouseForm extends Component
                         $attraction->delete();
                     }
 
-                    foreach ($data['attractionLists'] as $key => $data) {
+                    foreach ($data['attractionLists'] as $key => $attrList) {
                         NearbyAttraction::create([
                             'houseId' => $bh->id,
-                            'name'  => $data['name'],
+                            'name'  => $attrList['name'],
                             'order' => $key,
-                            'distance' => (int)$data['distance'],
-                            'distanceTypeId' => $data['distanceType']
+                            'distance' => (int)$attrList['distance'],
+                            'distanceTypeId' => $attrList['distanceType']
+                        ]);
+                    }
+                }
+
+
+                // Contains new image photo
+                if (!is_null($data['uploadImage'])) {
+                    // Remove all existing images and insert new data
+                    if (!$bh->getHousePhoto->isEmpty()) {
+                        foreach ($bh->getHousePhoto as $photo) {
+                            $photo->delete();
+                        }
+                    }
+
+                    // Insert the new photo
+                    foreach ($data['uploadImage'] as $upload) {
+                        HouseImage::create([
+                            'houseId' => $bh->id,
+                            'imageUrl' => $this->uploadImage($upload)
                         ]);
                     }
                 }
 
                 DB::commit();
                 $this->dispatch('success-update');
+
             } else {
                 $house = House::create([
                     'userId'    => $data['userId'],
@@ -195,13 +256,22 @@ class BoardingHouseForm extends Component
                 ]);
 
                 if (!empty($data['attractionLists'])) {
-                    foreach ($data['attractionLists'] as $key => $data) {
+                    foreach ($data['attractionLists'] as $key => $list) {
                         NearbyAttraction::create([
                             'houseId' => $house->id,
-                            'name'  => $data['name'],
+                            'name'  => $list['name'],
                             'order' => $key,
-                            'distance' => (int)$data['distance'],
-                            'distanceTypeId' => $data['distanceType']
+                            'distance' => (int)$list['distance'],
+                            'distanceTypeId' => $list['distanceType']
+                        ]);
+                    }
+                }
+
+                if (!empty($data['uploadImage'])) {
+                    foreach ($data['uploadImage'] as $upload) {
+                        HouseImage::create([
+                            'houseId' => $house->id,
+                            'imageUrl' => $this->uploadImage($upload)
                         ]);
                     }
                 }
@@ -216,6 +286,11 @@ class BoardingHouseForm extends Component
             DB::rollBack();
             return $this->redirect('/admin/boarding-houses', navigate: true);
         }
+    }
+
+    public function removeUploadImage($index)
+    {
+        unset($this->uploadImage[$index]);
     }
 
     #[Layout('components.layouts.adminAuth')]

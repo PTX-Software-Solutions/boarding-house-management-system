@@ -2,8 +2,10 @@
 
 namespace App\Livewire\Auth\User;
 
+use App\Enums\StatusEnums;
 use App\Enums\UserTypeEnums;
 use App\Livewire\Forms\User\RegistrationForm;
+use App\Models\Status;
 use App\Models\User;
 use App\Models\UserType;
 use Exception;
@@ -11,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -22,48 +25,39 @@ class UserRegister extends Component
 {
     use WithFileUploads;
 
-    #[Rule('required')]
     public $firstName;
 
-    #[Rule('required')]
     public $lastName;
 
-    #[Rule('required|email|unique:users')]
     public $email;
 
-    #[Rule('required|min:6|confirmed')]
     public $password;
 
-    #[Rule('required')]
     public $password_confirmation;
 
-    #[Rule('nullable')]
-    #[Rule(
-        'mimes:png,jpg,jpeg',
-        message: 'The image must be a file of type: png, jpg, jpeg with the max size of 2MB.'
-    )] //2MB Image Max
     public $profileImage;
 
     public function updatedProfileImage($value)
     {
         $extension = pathinfo($value->getFilename(), PATHINFO_EXTENSION);
-        if (!in_array($extension, ['png', 'jpeg', 'jpg', 'gif'])) {
+        if (!in_array($extension, ['png', 'jpeg', 'jpg'])) {
             $this->reset('profileImage');
         }
 
         $this->validate([
-            'profileImage' => 'mimes:png,jpeg,jpg,gif|max:2048', // .2MB Max
-        ]);
+            'profileImage'     => 'mimes:png,jpeg,jpg|max:2048',
+        ],);
     }
 
-    public function uploadImage()
+    public function uploadImage($image)
     {
-        if ($this->profileImage) {
+        if ($image) {
             $randomName = Str::random(20);
-            $extension = $this->profileImage->getClientOriginalExtension();
+            $extension = $image->getClientOriginalExtension();
             $newName = $randomName . '.' . $extension;
 
-            $this->profileImage->storeAs('public/images', $newName);
+            // $image->storeAs('photos/client/', $newName, 's3');
+            $image->storeAs('public/images', $newName);
         } else {
             // Default Image Name
             $newName = env('DEFAULT_IMAGE_NAME');
@@ -80,7 +74,25 @@ class UserRegister extends Component
 
     public function save()
     {
-        $this->validate();
+        $validated = Validator::make(
+            [
+                'firstName' => $this->firstName,
+                'lastName'  => $this->lastName,
+                'email'     => $this->email,
+                'password'     => $this->password,
+                'password_confirmation'     => $this->password_confirmation,
+                'profileImage'     => $this->profileImage,
+            ],
+            [
+                'firstName' => 'required',
+                'lastName'  => 'required',
+                'email'     => 'required|email|unique:users',
+                'password'     => 'required|min:6',
+                'password_confirmation' => 'same:password',
+                'profileImage'     => 'mimes:png,jpeg,jpg|max:2048',
+            ],
+        )->validate();
+
 
         DB::beginTransaction();
 
@@ -88,14 +100,16 @@ class UserRegister extends Component
 
             // Default registration user type
             $userDefaultType = UserType::where('name', UserTypeEnums::USER)->first();
+            $userDefaultStatus = Status::where('serial_id', StatusEnums::ACTIVE)->first();
 
             $user = User::create([
-                'firstName'     => $this->firstName,
-                'lastName'      => $this->lastName,
-                'email'         => $this->email,
-                'password'      => Hash::make($this->password),
+                'firstName'     => $validated['firstName'],
+                'lastName'      => $validated['lastName'],
+                'email'         => $validated['email'],
+                'password'      => Hash::make($validated['password']),
                 'userTypeId'    => $userDefaultType->id,
-                'profileImage'  => $this->uploadImage()
+                'statusId'      => $userDefaultStatus->id,
+                'profileImage'  => $this->uploadImage($validated['profileImage'])
             ]);
 
             Auth::guard('web')->login($user);

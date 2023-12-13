@@ -1,5 +1,4 @@
 <div>
-
     <button wire:click="back" class="btn btn-sm btn-primary mb-3"><i class="fa fa-chevron-left" aria-hidden="true"></i>
         Back</button>
 
@@ -12,16 +11,6 @@
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="alert alert-danger">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
         </div>
     @endif
 
@@ -39,33 +28,53 @@
                                 <div class="form-group">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <label wire:click="$refs.uploadImage.click()" for="uploadImage"
-                                            style="cursor: pointer; text-align:center;"
-                                            class="@error('uploadImage') border border-danger @enderror">
-                                            <i class="fa fa-plus-circle" aria-hidden="true"></i>
-                                            Add
+                                            style="cursor: pointer; text-align:center;">
+                                            <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                            Upload
                                         </label>
                                     </div>
-                                    <input type="file" wire:model="uploadImage" class="form-control"
-                                        style="visibility: hidden;" id="uploadImage" multiple>
-                                    <div wire:loading wire:target="uploadImage">Uploading...</div>
-                                    <div>
-                                        @if ($uploadImage)
-                                            <div class="d-flex flex-wrap">
-                                                @foreach ($uploadImage as $key => $image)
-                                                    <div style="width: 100px; height: 100px; position: relative;"
-                                                        class="mx-1">
-                                                        <div style="position: absolute; top: -10px; right: 0; cursor: pointer;"
-                                                            wire:click="removeUploadImage({{ $key }})">
-                                                            <i class="fa fa-times-circle" aria-hidden="true"></i>
+                                    <div x-data="{ uploading: false, progress: 0 }" x-on:livewire-upload-start="uploading = true"
+                                        x-on:livewire-upload-finish="uploading = false"
+                                        x-on:livewire-upload-error="uploading = false"
+                                        x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                        <input type="file" wire:model="uploadImage" class="form-control"
+                                            style="visibility: hidden;" id="uploadImage" multiple>
+                                        <!-- Progress Bar -->
+                                        <div x-show="uploading">
+                                            <progress max="100" x-bind:value="progress"></progress>
+                                        </div>
+                                        {{-- @dd('zxczxc', $oldImage) --}}
+                                        <div>
+                                            @if ($oldImage)
+                                                <div class="d-flex flex-wrap">
+                                                    @foreach ($oldImage as $key => $image)
+                                                        <div style="width: 100px; height: 100px; position: relative;"
+                                                            class="mx-1">
+                                                            <img src="{{ Storage::url('public/images/' . $image) }}"
+                                                                class="img-thumbnail rounded"
+                                                                style="width: 100%; height: 100%; object-fit: contain;"
+                                                                alt="">
                                                         </div>
-                                                        <img src="{{ $image->temporaryUrl() }}"
-                                                            class="img-thumbnail rounded"
-                                                            style="width: 100%; height: 100%; object-fit: contain;"
-                                                            alt="">
-                                                    </div>
-                                                @endforeach
-                                            </div>
-                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+
+                                            @if ($uploadImage)
+                                                {{-- @dd('asdasd') --}}
+                                                <span>These are the new photos</span>
+                                                <div class="d-flex flex-wrap">
+                                                    @foreach ($uploadImage as $key => $image)
+                                                        <div style="width: 100px; height: 100px; position: relative;"
+                                                            class="mx-1">
+                                                            <img src="{{ $image->temporaryUrl() }}"
+                                                                class="img-thumbnail rounded"
+                                                                style="width: 100%; height: 100%; object-fit: contain;"
+                                                                alt="">
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div>
                                         @error('uploadImage')
@@ -103,8 +112,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="nameNumber">Name/Number</label>
-                                        <input type="text" wire:model="nameNumber"
-                                            class="form-control @error('nameNumber') border border-danger @enderror"
+                                        <input type="text" wire:model="nameNumber" class="form-control"
                                             id="nameNumber">
                                         <div>
                                             @error('nameNumber')
@@ -114,8 +122,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="monthDeposit">Monthly Deposit</label>
-                                        <input type="number" wire:model="monthDeposit"
-                                            class="form-control @error('monthDeposit') border border-danger @enderror"
+                                        <input type="number" wire:model="monthDeposit" class="form-control"
                                             id="monthDeposit">
                                         <div>
                                             @error('monthDeposit')
@@ -126,8 +133,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="roomType">Room Type</label>
-                                    <select class="form-control @error('roomType') border border-danger @enderror"
-                                        wire:model="roomType" id="exampleFormControlSelect1">
+                                    <select class="form-control" wire:model="roomType"
+                                        id="exampleFormControlSelect1">
                                         <option>-- Select type --</option>
                                         @foreach ($roomTypes as $roomType)
                                             <option value="{{ $roomType->id }}">
@@ -143,8 +150,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="address2">Status</label>
-                                    <select class="form-control @error('status') border border-danger @enderror"
-                                        wire:model="status" id="exampleFormControlSelect1">
+                                    <select class="form-control" wire:model="status" id="exampleFormControlSelect1">
                                         <option>-- Select status --</option>
                                         @foreach ($statuses as $status)
                                             <option value="{{ $status->id }}">
@@ -165,47 +171,42 @@
                         </div>
                     </div>
 
-                    {{-- Nearby Attraction --}}
+                    {{-- Room Amenities --}}
                     <div class="tab-pane fade {{ $currentTab === 2 ? 'show active' : '' }}" id="profile"
                         role="tabpanel" aria-labelledby="profile-tab">
                         <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-end align-items-center">
-                                    <button type="button" wire:click="addRoomAmmenities"
-                                        class="btn btn-primary my-3">
-                                        <i class="fas fa-plus-circle"></i>
-                                        Add</button>
-                                </div>
+                            <div class="card-body"
+                                style="width: 100%; 
+                            max-height: 300px; overflow-y: auto;">
 
-                                <table class="table table-hover">
+                                <table class="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">Name</th>
-                                            <th scope="col">Remove</th>
+                                            <th scope="col">Amenities @if (count($roomAmenities) > 0)
+                                                    (Chooses ({{ count($roomAmenities) }}))
+                                                @endif
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($roomAmmenities as $index => $roomAmmenity)
+                                        <small>
+                                            @error('roomAmenities')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </small>
+                                        @forelse ($amenities as $index => $amenity)
                                             <tr>
-                                                <th scope="row">
-                                                    <div class="form-group">
-                                                        <input type="text"
-                                                            wire:model="roomAmmenities.{{ $index }}.name"
-                                                            class="form-control @error("roomAmmenities.{$index}.name") border border-danger @enderror"
-                                                            aria-describedby="emailHelp" placeholder="...">
+                                                <th scope="row" for="{{ $amenity->id }}">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" wire:model.live="roomAmenities"
+                                                            value="{{ $amenity->id }}" id="{{ $amenity->id }}"
+                                                            class="form-check-input" aria-describedby="emailHelp"
+                                                            {{ $id && $roomId && in_array($amenity->id, $roomAmenities) ? 'checked' : '' }}>
+                                                        <label for="{{ $amenity->id }}">
+                                                            {{ $amenity->name }}
+                                                        </label>
                                                     </div>
-                                                    <small>
-                                                        @error("roomAmmenities.{$index}.name")
-                                                            <p class="text-danger">{{ $message }}</p>
-                                                        @enderror
-                                                    </small>
                                                 </th>
-                                                <td>
-                                                    <a href="#"
-                                                        wire:click="removeRoomAmmenities({{ $index }})">
-                                                        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
-                                                    </a>
-                                                </td>
                                             </tr>
                                         @empty
                                             <tr>

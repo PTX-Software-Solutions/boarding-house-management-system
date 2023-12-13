@@ -7,20 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class NearbyAttraction extends Model
+class HouseImage extends Model
 {
     use HasFactory, SoftDeletes, UUID;
 
     protected $fillable = [
         'houseId',
-        'name',
-        'distance',
-        'order',
-        'distanceTypeId'
+        'imageUrl'
     ];
 
-    public function house()
-    {
-        return $this->belongsTo(House::class);
-    }
 }

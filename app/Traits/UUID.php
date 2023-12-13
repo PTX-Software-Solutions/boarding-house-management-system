@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 trait UUID
@@ -18,6 +19,10 @@ trait UUID
         static::creating(function ($model) {
             if ($model->getKey() === null) {
                 $model->setAttribute($model->getKeyName(), Str::uuid()->toString());
+            }
+            
+            if (Schema::hasColumn($model->getTable(), 'serial_id')) {
+                $model->serial_id = $model->max('serial_id') + 1;
             }
         });
     }

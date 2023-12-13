@@ -58,6 +58,11 @@
                         aria-selected="false">Nearby
                         Attraction</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $currentTab === 3 ? 'active' : '' }}" id="profile-tab" data-toggle="tab"
+                        wire:click="changeTab(3)" href="#profile" role="tab" aria-controls="profile"
+                        aria-selected="false">Photo(s)</a>
+                </li>
             </ul>
             <form wire:submit="save" autocomplete="off">
                 <div class="tab-content" id="myTabContent">
@@ -91,8 +96,7 @@
 
                                     <div class="form-group col-md-6">
                                         <label for="houseName">House Name</label>
-                                        <input type="text" wire:model="houseName"
-                                            class="form-control @error('houseName') border border-danger @enderror"
+                                        <input type="text" wire:model="houseName" class="form-control"
                                             id="houseName">
                                         <div>
                                             @error('houseName')
@@ -102,9 +106,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="contact">Contact</label>
-                                        <input type="text" wire:model="contact"
-                                            class="form-control @error('contact') border border-danger @enderror"
-                                            id="contact">
+                                        <input type="text" wire:model="contact" class="form-control" id="contact">
                                         <div>
                                             @error('contact')
                                                 <p class="text-danger">{{ $message }}</p>
@@ -114,9 +116,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="address">Address</label>
-                                    <input type="text" wire:model="address"
-                                        class="form-control @error('address') border border-danger @enderror"
-                                        id="address" placeholder="1234 Main St">
+                                    <input type="text" wire:model="address" class="form-control" id="address"
+                                        placeholder="1234 Main St">
                                     <div>
                                         @error('address')
                                             <p class="text-danger">{{ $message }}</p>
@@ -125,9 +126,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="address2">Address 2</label>
-                                    <input type="text" wire:model="address2"
-                                        class="form-control @error('address2') border border-danger @enderror"
-                                        id="address2" placeholder="Apartment, studio, or floor">
+                                    <input type="text" wire:model="address2" class="form-control" id="address2"
+                                        placeholder="Apartment, studio, or floor">
                                     <div>
                                         @error('address2')
                                             <p class="text-danger">{{ $message }}</p>
@@ -137,9 +137,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-6">
                                         <label for="city">City</label>
-                                        <input type="text" wire:model="city"
-                                            class="form-control @error('city') border border-danger @enderror"
-                                            id="city">
+                                        <input type="text" wire:model="city" class="form-control" id="city">
                                         <div>
                                             @error('city')
                                                 <p class="text-danger">{{ $message }}</p>
@@ -148,9 +146,7 @@
                                     </div>
                                     <div class="form-group col-md-6">
                                         <label for="zip">Zip</label>
-                                        <input type="text" wire:model="zip"
-                                            class="form-control @error('zip') border border-danger @enderror"
-                                            id="zip">
+                                        <input type="text" wire:model="zip" class="form-control" id="zip">
                                         <div>
                                             @error('zip')
                                                 <p class="text-danger">{{ $message }}</p>
@@ -192,8 +188,8 @@
                                                     <div class="form-group">
                                                         <input type="text"
                                                             wire:model="attractionLists.{{ $index }}.name"
-                                                            class="form-control @error("attractionLists.{$index}.name") border border-danger @enderror"
-                                                            aria-describedby="emailHelp" placeholder="...">
+                                                            class="form-control" aria-describedby="emailHelp"
+                                                            placeholder="...">
                                                     </div>
                                                     <small>
                                                         @error("attractionLists.{$index}.name")
@@ -205,9 +201,8 @@
                                                     <div class="form-group">
                                                         <input type="number"
                                                             wire:model="attractionLists.{{ $index }}.distance"
-                                                            class="form-control @error("attractionLists.{$index}.distance") border border-danger @enderror"
-                                                            min="1" aria-describedby="emailHelp"
-                                                            placeholder="123">
+                                                            class="form-control" min="1"
+                                                            aria-describedby="emailHelp" placeholder="123">
                                                     </div>
                                                     <small>
                                                         @error("attractionLists.{$index}.distance")
@@ -217,8 +212,7 @@
                                                 </td>
                                                 <td>
                                                     <div class="form-group">
-                                                        <select
-                                                            class="form-control @error("attractionLists.{$index}.distanceType") border border-danger @enderror"
+                                                        <select class="form-control"
                                                             wire:model="attractionLists.{{ $index }}.distanceType"
                                                             id="exampleFormControlSelect1">
                                                             <option>-- Select type --</option>
@@ -252,6 +246,91 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Photos --}}
+                    <div class="tab-pane fade {{ $currentTab === 3 ? 'show active' : '' }}" id="profile"
+                        role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="card shadow mb-4">
+                            <div class="form-row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="form-group">
+                                                <div class="d-flex justify-content-center align-items-center">
+                                                    <label wire:click="$refs.uploadImage.click()" for="uploadImage"
+                                                        style="cursor: pointer; text-align:center;">
+                                                        <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                        Upload Image
+                                                    </label>
+                                                </div>
+                                                <div x-data="{ uploading: false, progress: 0 }"
+                                                    x-on:livewire-upload-start="uploading = true"
+                                                    x-on:livewire-upload-finish="uploading = false"
+                                                    x-on:livewire-upload-error="uploading = false"
+                                                    x-on:livewire-upload-progress="progress = $event.detail.progress">
+                                                    <input type="file" wire:model="uploadImage"
+                                                        class="form-control" style="visibility: hidden;"
+                                                        id="uploadImage" multiple>
+                                                    <!-- Progress Bar -->
+                                                    <div x-show="uploading">
+                                                        <progress max="100"
+                                                            x-bind:value="progress"></progress>
+                                                    </div>
+                                                    <div>
+                                                        @if ($oldImage)
+                                                            <div class="d-flex flex-wrap">
+                                                                @dd($oldImage)
+                                                                @foreach ($oldImage as $key => $image)
+                                                                    <div style="width: 100px; height: 100px; position: relative;"
+                                                                        class="mx-1">
+                                                                        {{-- <div style="position: absolute; top: -10px; right: 0; cursor: pointer;"
+                                                                                wire:click="removeUploadImage({{ $key }})">
+                                                                                <i class="fa fa-times-circle"
+                                                                                    aria-hidden="true"></i>
+                                                                            </div> --}}
+                                                                        <img src="{{ Storage::url('public/images/' . $image) }}"
+                                                                            class="img-thumbnail rounded"
+                                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                                            alt="">
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+
+                                                        @if ($uploadImage)
+                                                            <span>These are the new photos</span>
+                                                            <div class="d-flex flex-wrap">
+                                                                @foreach ($uploadImage as $key => $image)
+                                                                    <div style="width: 100px; height: 100px; position: relative;"
+                                                                        class="mx-1">
+                                                                        {{-- <div style="position: absolute; top: -10px; right: 0; cursor: pointer;"
+                                                                                wire:click="removeUploadImage({{ $key }})">
+                                                                                <i class="fa fa-times-circle"
+                                                                                    aria-hidden="true"></i>
+                                                                            </div> --}}
+                                                                        <img src="{{ $image->temporaryUrl() }}"
+                                                                            class="img-thumbnail rounded"
+                                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                                            alt="">
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    @error('uploadImage')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>
@@ -260,12 +339,8 @@
 
 <script data-navigate-track>
     function generateMapBox() {
-        console.log('IM IN THE HOUSE FORM SCRIPT')
         const longitude = {{ $longitude }}
         const latitude = {{ $latitude }}
-
-        console.log('longitude: ', longitude)
-        console.log('latitude: ', latitude)
 
         mapboxgl.accessToken =
             '{{ env('MAPBOX_API_KEY') }}';

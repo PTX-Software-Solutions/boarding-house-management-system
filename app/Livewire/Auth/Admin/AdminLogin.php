@@ -41,7 +41,7 @@ class AdminLogin extends Component
                 return;
             }
 
-            // Check user TYPE: MANAGEMENT
+            // Check user TYPE: ADMIN
             if (!$user->isAdmin()) {
                 $this->addError('login', 'Unauthorized user');
                 return;
@@ -51,6 +51,7 @@ class AdminLogin extends Component
                 'email' => $this->email,
                 'password' => $this->password
             ], $this->rememberMe)) {
+                Auth::guard('admin')->login($user);
                 $this->dispatch('success-login');
             } else {
                 $this->addError('login', 'Incorrect email or password');

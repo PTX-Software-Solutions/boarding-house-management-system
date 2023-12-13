@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('user_types', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->bigInteger('serial_id');
             $table->string('name');
             $table->timestamps();
             $table->softDeletes();

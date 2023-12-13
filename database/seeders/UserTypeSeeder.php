@@ -19,7 +19,7 @@ class UserTypeSeeder extends Seeder
     {
         $datas = [
             [
-                'name' => 'USER',
+                'name' => 'CLIENT',
             ],
             [
                 'name' => 'ADMIN',

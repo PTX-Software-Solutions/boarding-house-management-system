@@ -5,6 +5,7 @@ namespace App\Livewire\User;
 use App\Models\House;
 use App\Service\MapboxService;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;

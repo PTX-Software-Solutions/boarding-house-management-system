@@ -23,6 +23,16 @@ class House extends Model
         'latitude'
     ];
 
+    public function nearbyAttraction()
+    {
+        return $this->hasMany(NearbyAttraction::class, 'houseId', 'id');
+    }
+
+    public function getHousePhoto()
+    {
+        return $this->hasMany(HouseImage::class, 'houseId', 'id');
+    }
+
     public function getNearbyAttractionInOrder()
     {
         return $this->hasMany(NearbyAttraction::class, 'houseId', 'id')->orderBy('order', 'ASC');

@@ -60,10 +60,13 @@ class StatusSeeder extends Seeder
                 'name'             => 'Inactive',
             ],
             [
-                'name'             => 'Inactive',
+                'name'             => 'Vacant',
             ],
             [
                 'name'             => 'Occupied',
+            ],
+            [
+                'name'             => 'Banned',
             ],
         ];
 

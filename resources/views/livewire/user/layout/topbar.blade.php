@@ -204,7 +204,11 @@
                 <a id="toggleButton" class="nav-link dropdown-toggle" href="#" role="button"
                     aria-expanded="false">
                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->firstName }}</span>
-                    <figure class="img-profile rounded-circle avatar font-weight-bold" data-initial=""></figure>
+                    <div class="img-profile rounded-circle avatar font-weight-bold" data-initial="">
+                        <img src="{{ asset('storage/images/' . Auth::user()->profileImage) }}" alt="">
+                        {{-- <img src="{{ Storage::disk('s3')->url('photos/client/' . Auth::user()->profileImage) }}"
+                            alt="Profile Image"> --}}
+                    </div>
                 </a>
 
                 <div id="contentsss" class="dropdown-menu dropdown-menu-right shadow">
@@ -297,7 +301,7 @@
         var content = document.getElementById('contentsss');
         var parentDiv = document.getElementById('parentDiv');
 
-        parentDiv.addEventListener('click', function () {
+        parentDiv.addEventListener('click', function() {
 
             if (!isOpen) {
                 isOpen = true;
@@ -312,7 +316,40 @@
             }
         });
 
-        document.addEventListener('click', function (event) {
+        document.addEventListener('click', function(event) {
+            var isClickInside = parentDiv.contains(event.target) || content.contains(event.target);
+
+            if (!isClickInside && isOpen) {
+                isOpen = false;
+                content.classList.remove("show");
+                parentDiv.classList.remove("show");
+                toggleButton.setAttribute("aria-expanded", "false");
+            }
+        });
+    })
+
+    document.addEventListener('livewire:navigated', () => {
+        var isOpen = false;
+        var toggleButton = document.getElementById('toggleButton');
+        var content = document.getElementById('contentsss');
+        var parentDiv = document.getElementById('parentDiv');
+
+        parentDiv.addEventListener('click', function() {
+
+            if (!isOpen) {
+                isOpen = true;
+                content.classList.add("show");
+                parentDiv.classList.add("show");
+                toggleButton.setAttribute("aria-expanded", "true");
+            } else {
+                isOpen = false;
+                content.classList.remove("show");
+                parentDiv.classList.remove("show");
+                toggleButton.setAttribute("aria-expanded", "false");
+            }
+        });
+
+        document.addEventListener('click', function(event) {
             var isClickInside = parentDiv.contains(event.target) || content.contains(event.target);
 
             if (!isClickInside && isOpen) {

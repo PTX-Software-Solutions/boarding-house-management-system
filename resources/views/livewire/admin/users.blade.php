@@ -1,14 +1,10 @@
 <div>
 
-    <button wire:click="back" class="btn btn-sm btn-primary mb-3"><i class="fa fa-chevron-left" aria-hidden="true"></i>
-        Back</button>
-
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Rooms') }}</h1>
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Users') }}</h1>
 
     <div class="d-flex justify-content-end">
-        <button wire:click="createRooms"
-            class="bg-primary text-white border-radius px-3 py-2
+        <button wire:click="createUser" class="bg-primary text-white border-radius px-3 py-2
         rounded border my-4">
             <i class="fas fa-plus-circle"></i>
             {{ __('Add') }}
@@ -18,39 +14,35 @@
     <table class="table">
         <thead class="thead-light">
             <tr>
-                <th scope="col">Name/Number</th>
-                <th scope="col">Monthly Deposit</th>
-                <th scope="col">Room Type</th>
-                <th scope="col">Room Ammenities</th>
+                <th scope="col">Name</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
-            @forelse ($rooms as $room)
-                <tr wire:key="{{ $room->id }}">
-                    <th scope="row">{{ $room->roomName }}</th>
-                    <td>{{ $room->monthlyDeposit }}</td>
-                    <td>{{ $room->roomTypeName }}</td>
+            @forelse ($users as $user)
+                <tr wire:key="{{ $user->id }}">
+                    <th scope="row">{{ $user->firstName }} {{ $user->lastName }}</th>
+                    <td>{{ $user->email }}</td>
+                    <td><span class="badge badge-primary">{{ ucfirst($user->userType->name) ?? '' }}</span></td>
                     <td>
-                        @if ($room->amenityNames)
-                            @foreach (explode(',', $room->amenityNames) as $data)
-                                <span class="badge badge-primary">{{ $data }}</span>
-                            @endforeach
-                        @endif
+                        <span
+                            class="badge
+                            @if ($user->status->serial_id == 14) {{ 'badge-success' }}
+                            @elseif ($user->status->serial_id == 15)
+                            {{ 'badge-secondary' }}
+                            @else 
+                            {{ 'badge-danger' }} @endif">{{ $user->status->name ?? '' }}
+                        </span>
                     </td>
-                    <td>{{ $room->statusName }}</td>
                     <td>
-                        <button wire:click="editRoom('{{ $room->id }}')"
+                        <button wire:click="editUser('{{ $user->id }}')"
                             class="btn btn-info delete-header m-1 btn-sm text-white" title="Edit" data-toggle="modal"
                             data-target="#boardingHouseModal">
                             <i class="fa fa-pencil" aria-hidden="true"></i>
                             Edit
-                        </button>
-                        <button wire:click="deleteRoom('{{ $room->id }}')"
-                            class="btn btn-danger delete-header m-1 btn-sm" title="Delete">
-                            <i class="fa fa-trash" aria-hidden="true"></i>
-                            Delete
                         </button>
                     </td>
                 </tr>
@@ -64,7 +56,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-end">
-        {{ $rooms->links() }}
+        {{ $users->links() }}
     </div>
 </div>
 
@@ -76,7 +68,7 @@
                     position: 'top-end',
                     icon: 'success',
                     title: 'Success!',
-                    text: 'Room created successfully!',
+                    text: 'BH created successfully!',
                     showConfirmButton: false,
                     timer: 1500
                 });
@@ -89,7 +81,7 @@
                     position: 'top-end',
                     icon: 'success',
                     title: 'Success!',
-                    text: 'Room updated successfully!',
+                    text: 'BH updated successfully!',
                     showConfirmButton: false,
                     timer: 1500
                 });

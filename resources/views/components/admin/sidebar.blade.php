@@ -23,7 +23,28 @@
     <li class="nav-item {{ Nav::isRoute('admin.boarding-house') }}">
         <a class="nav-link" href="{{ route('admin.boarding-house') }}" wire:navigate>
             <i class="fa fa-list-ul" aria-hidden="true"></i>
-            <span>{{ __('Boarding House') }}</span></a>
+            <span>{{ __('Boarding Houses') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item {{ Nav::isRoute('admin.users') }}">
+        <a class="nav-link" href="{{ route('admin.users') }}" wire:navigate>
+            <i class="fa fa-users" aria-hidden="true"></i>
+            <span>{{ __('Users') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" wire:navigate>
+            <i class="fa-solid fa-bars-progress"></i>
+            <span>{{ __('Reservations') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Dashboard -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" wire:navigate>
+            <i class="fa-solid fa-book"></i>
+            <span>{{ __('Reports') }}</span></a>
     </li>
 
     <!-- Divider -->
