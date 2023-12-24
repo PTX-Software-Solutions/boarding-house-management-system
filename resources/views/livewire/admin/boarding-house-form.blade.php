@@ -279,7 +279,6 @@
                                                     <div>
                                                         @if ($oldImage)
                                                             <div class="d-flex flex-wrap">
-                                                                @dd($oldImage)
                                                                 @foreach ($oldImage as $key => $image)
                                                                     <div style="width: 100px; height: 100px; position: relative;"
                                                                         class="mx-1">

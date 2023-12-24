@@ -1,16 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Reservations') }}</h1>
-
-    <div class="d-flex justify-content-end">
-        <button wire:click="createReservation"
-            class="bg-primary text-white border-radius px-3 py-2
-        rounded border my-4">
-            <i class="fas fa-plus-circle"></i>
-            {{ __('Add') }}
-        </button>
-    </div>
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Confirmations') }}</h1>
 
     <table class="table">
         <thead class="thead-light">
@@ -20,7 +11,6 @@
                 <th scope="col">Room</th>
                 <th scope="col">Check In</th>
                 <th scope="col">Check Out</th>
-                <th scope="col">Status</th>
                 <th scope="col" class="text-center">Action</th>
             </tr>
         </thead>
@@ -33,45 +23,18 @@
                     <td>{{ \Carbon\Carbon::parse($reservation->checkIn)->format('Y-m-d') }}</td>
                     <td>{{ $reservation->checkOut ? \Carbon\Carbon::parse($reservation->checkOut)->format('Y-m-d') : '-' }}
                     </td>
-                    <td>
-                        {{-- PENDING --}}
-                        @if ($reservation->getStatus->serial_id === 1)
-                            <span class="badge badge-info">{{ $reservation->getStatus->name }}</span>
-
-                            {{-- APPROVED --}}
-                        @elseif($reservation->getStatus->serial_id === 2)
-                            <span class="badge badge-success">{{ $reservation->getStatus->name }}</span>
-
-                            {{-- CANCELLED --}}
-                        @elseif($reservation->getStatus->serial_id === 3)
-                            <span class="badge badge-danger">{{ $reservation->getStatus->name }}</span>
-
-                            {{-- FOR-APPROVAL --}}
-                        @elseif($reservation->getStatus->serial_id === 6)
-                            <span class="badge badge-warning">{{ $reservation->getStatus->name }}</span>
-                        @endif
-                    </td>
                     <td class="text-center">
                         <button wire:click="cancelReservation('{{ $reservation->id }}')"
                             class="btn btn-danger delete-header m-1 btn-sm text-white" title="Edit"
-                            data-toggle="modal" data-target="#boardingHouseModal"
-                            {{ $reservation->getStatus->serial_id === 6 || $reservation->getStatus->serial_id === 3 || $reservation->getStatus->serial_id === 2 ? 'disabled' : '' }}>
+                            data-toggle="modal" data-target="#boardingHouseModal">
                             <i class="fa fa-ban" aria-hidden="true"></i>
                             Cancel
                         </button>
-                        <button wire:click="forApprovalReservation('{{ $reservation->id }}')"
+                        <button wire:click="approveReservation('{{ $reservation->id }}')"
                             class="btn btn-primary delete-header m-1 btn-sm text-white" title="Edit"
-                            data-toggle="modal" data-target="#boardingHouseModal"
-                            {{ $reservation->getStatus->serial_id === 6 || $reservation->getStatus->serial_id === 3 || $reservation->getStatus->serial_id === 2 ? 'disabled' : '' }}>
+                            data-toggle="modal" data-target="#boardingHouseModal">
                             <i class="fa fa-check" aria-hidden="true"></i>
-                            For Approval
-                        </button>
-                        <button wire:click="editReservation('{{ $reservation->id }}')"
-                            class="btn btn-info delete-header m-1 btn-sm text-white" title="Edit" data-toggle="modal"
-                            data-target="#boardingHouseModal"
-                            {{ $reservation->getStatus->serial_id === 6 || $reservation->getStatus->serial_id === 3 || $reservation->getStatus->serial_id === 2 ? 'disabled' : '' }}>
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                            Edit
+                            Approve
                         </button>
                     </td>
                 </tr>
@@ -117,22 +80,22 @@
             }, 1000)
         })
 
-        Livewire.on('forApproval', (event) => {
+        Livewire.on('approveRes', (event) => {
             Swal.fire({
-                title: 'Update into for-approval?',
+                title: 'Approve Reservation?',
                 text: "You won't be able to revert this!",
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, for approval!'
+                confirmButtonText: 'Yes, approve it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.dispatch("forApprovalRes", {
+                    @this.dispatch("approveReserv", {
                         id: event.id
                     })
                     Swal.fire(
-                        'For Approval!',
+                        'Approved!',
                         'Your data status has been updated.',
                         'success'
                     )

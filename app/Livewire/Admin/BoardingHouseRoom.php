@@ -51,6 +51,7 @@ class BoardingHouseRoom extends Component
             ->leftJoin('statuses AS s', 'r.statusId', '=', 's.id')
             ->groupBy('r.id')
             ->orderBy('created_at', 'DESC')
+            ->where('houseId', $this->id)
             ->paginate(10);
 
         return view('livewire.admin.boarding-house-room', [

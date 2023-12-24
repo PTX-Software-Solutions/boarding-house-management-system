@@ -23,6 +23,10 @@ class House extends Model
         'latitude'
     ];
 
+    public function getUser() {
+        return $this->belongsTo(User::class, 'userId');
+    }
+
     public function nearbyAttraction()
     {
         return $this->hasMany(NearbyAttraction::class, 'houseId', 'id');
@@ -41,5 +45,10 @@ class House extends Model
     public function getNearbyAttractions()
     {
         return $this->hasMany(NearbyAttraction::class, 'houseId', 'id');
+    }
+
+    public function getRooms()
+    {
+        return $this->hasMany(Room::class, 'roomId', 'id');
     }
 }

@@ -19,9 +19,19 @@ class Room extends Model
         'statusId'
     ];
 
+    public function getHouse()
+    {
+        return $this->belongsTo(House::class, 'houseId');
+    }
+
     public function getRoomImages()
     {
         return $this->hasMany(roomImage::class, 'roomId', 'id');
+    }
+
+    public function getAmenities()
+    {
+        return $this->hasMany(Amenity::class, 'amenityId', 'id');
     }
 
     public function amenities()
@@ -32,5 +42,10 @@ class Room extends Model
     public function getRoomType()
     {
         return $this->hasOne(RoomType::class, 'id', 'roomTypeId');
+    }
+
+    public function getStatus()
+    {
+        return $this->hasOne(Status::class, 'id', 'statusId');
     }
 }

@@ -19,6 +19,11 @@ class NearbyAttraction extends Model
         'distanceTypeId'
     ];
 
+    public function distanceTypes()
+    {
+        return $this->hasOne(DistanceTypes::class, 'id', 'distanceTypeId');
+    }
+
     public function house()
     {
         return $this->belongsTo(House::class);

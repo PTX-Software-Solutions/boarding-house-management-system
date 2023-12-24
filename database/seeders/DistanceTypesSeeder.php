@@ -15,13 +15,13 @@ class DistanceTypesSeeder extends Seeder
     {
         $datas = [
             [
-                'name' => 'Meters',
+                'name' => 'Meter(s)',
             ],
             [
-                'name' => 'Kilometers',
+                'name' => 'Kilometer(s)',
             ],
             [
-                'name' => 'Yards',
+                'name' => 'Yard(s)',
             ],
         ];
 

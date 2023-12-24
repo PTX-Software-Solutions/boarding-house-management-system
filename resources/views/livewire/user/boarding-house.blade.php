@@ -4,23 +4,23 @@
 
         <div class="card shadow mb-4">
             <div class="card-profile-image mt-4">
-                <figure class="rounded-circle avatar avatar font-weight-bold"
+                {{-- <figure class="rounded-circle avatar avatar font-weight-bold"
                     style="font-size: 60px; height: 180px; width: 180px;" data-initial="{{ Auth::user()->firstName }}">
-                </figure>
+                </figure> --}}
             </div>
             <div class="card-body">
 
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="text-center">
-                            <h5 class="font-weight-bold">{{ Auth::user()->fullName }}</h5>
+                            <h5 class="font-weight-bold">{{ $boardingHouses->houseName }}</h5>
                             <p>Home Owner</p>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="card-profile-stats">
                             <div class="d-flex justify-content-center align-items-center">
                                 <i class="fa fa-star text-primary" aria-hidden="true"></i>
@@ -30,12 +30,6 @@
                                 <i class="fa fa-star" aria-hidden="true"></i>
                             </div>
                             <span class="description">Ratings</span>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card-profile-stats">
-                            <span class="heading">10</span>
-                            <span class="description">Photos</span>
                         </div>
                     </div>
                 </div>
@@ -108,7 +102,8 @@
                                             <strong>Jessy Doe</strong>
                                             <p
                                                 style="padding: 5px; background-color: rgb(238, 237, 237); border-radius: 10px;">
-                                                I regret choosing this boarding house for my recent stay. The room was dirty,
+                                                I regret choosing this boarding house for my recent stay. The room was
+                                                dirty,
                                                 with visible stains on the carpet and sheets. The bathroom smelled
                                                 unpleasant, and the towels were old and worn. The noise from the street
                                                 outside was also disturbing, making it difficult to get a good night's
@@ -123,14 +118,15 @@
                                     </div>
 
 
-                                    <p class="text-primary" style="cursor: pointer; text-align: center; font-size: 12px;">Load more messages...</p>
+                                    <p class="text-primary"
+                                        style="cursor: pointer; text-align: center; font-size: 12px;">Load more
+                                        messages...</p>
 
                                 </div>
 
                                 <div class="card-footer">
                                     <div class="input-group">
-                                        <textarea type="text" id="message" class="form-control"
-                                            placeholder="Type your message..."></textarea>
+                                        <textarea type="text" id="message" class="form-control" placeholder="Type your message..."></textarea>
                                         <div class="input-group-append">
                                             <button onclick="sendMessage()" class="btn btn-primary disabled" disabled>
                                                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
@@ -172,93 +168,55 @@
 
                     <div class="container">
                         <div class="row d-flex">
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
-                                <div class="card" style="width: 16rem;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Room 1</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and
-                                            make
-                                            up the bulk of
-                                            the
-                                            card's content.</p>
-                                        <a href="http://127.0.0.1:8000/boarding-houses/123/room-details/123"
-                                            class="btn btn-primary">View Room</a>
+                            @foreach ($rooms as $room)
+                                <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
+                                    <div class="card" style="width: 16rem;">
+                                        <div id="carouselExampleControls" class="carousel slide"
+                                            data-ride="carousel">
+                                            <div class="carousel-inner" style="max-height:150px">
+                                                @foreach ($room?->getRoomImages as $index => $image)
+                                                    <div class="carousel-item {{ $index === 0 ? 'active' : '' }}"
+                                                        style="width: 100%; height: 100%;">
+                                                        <img src="{{ asset('storage/images/' . $image->imageUrl) }}"
+                                                            class="d-block rounded"
+                                                            style="width: 100%; height: 100%; object-fit:cover;"
+                                                            alt="...">
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <button class="carousel-control-prev" type="button"
+                                                data-target="#carouselExampleControls" data-slide="prev">
+                                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                                <span class="sr-only">Previous</span>
+                                            </button>
+                                            <button class="carousel-control-next" type="button"
+                                                data-target="#carouselExampleControls" data-slide="next">
+                                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                                <span class="sr-only">Next</span>
+                                            </button>
+                                        </div>
+
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <h5 class="card-title">{{ $room->name }}</h5>
+                                                <p class="font-weight-light">{{ $room?->getRoomType->name }}</p>
+                                            </div>
+                                            <p class="card-text">&#8369; {{ number_format($room->monthlyDeposit, 2) }}
+                                            </p>
+                                            <a href="{{ url("/boarding-houses/$room->houseId" . "/room-details/$room->id/?search=$search") }}"
+                                                class="btn btn-primary">View Room</a>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
-                                <div class="card" style="width: 16rem;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Room 1</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and
-                                            make
-                                            up the bulk of
-                                            the
-                                            card's content.</p>
-                                        <a href="http://127.0.0.1:8000/boarding-houses/123/room-details/123"
-                                            class="btn btn-primary">View Room</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
-                                <div class="card" style="width: 16rem;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Room 1</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and
-                                            make
-                                            up the bulk of
-                                            the
-                                            card's content.</p>
-                                        <a href="http://127.0.0.1:8000/boarding-houses/123/room-details/123"
-                                            class="btn btn-primary">View Room</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
-                                <div class="card" style="width: 16rem;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Room 1</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and
-                                            make
-                                            up the bulk of
-                                            the
-                                            card's content.</p>
-                                        <a href="http://127.0.0.1:8000/boarding-houses/123/room-details/123"
-                                            class="btn btn-primary">View Room</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
-                                <div class="card" style="width: 16rem;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
-                                    <div class="card-body">
-                                        <h5 class="card-title">Room 1</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and
-                                            make
-                                            up the bulk of
-                                            the
-                                            card's content.</p>
-                                        <a href="http://127.0.0.1:8000/boarding-houses/123/room-details/123"
-                                            class="btn btn-primary">View Room</a>
-                                    </div>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="my-3 btn btn-primary">
+                        {{ $rooms->links() }}
+                        {{-- <button type="submit" class="my-3 btn btn-primary">
                             <i class="fa fa-search" aria-hidden="true"></i>
                             <span>Show More</span>
-                        </button>
+                        </button> --}}
                     </div>
                 </div>
 

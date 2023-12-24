@@ -280,7 +280,7 @@ class BoardingHouseForm extends Component
                 $this->dispatch('success-insert');
             }
 
-            return $this->redirect('/admin/boarding-houses', navigate: true);
+                return $this->redirect('/admin/boarding-houses', navigate: true);
         } catch (Exception $e) {
             Log::debug($e);
             DB::rollBack();
@@ -302,7 +302,7 @@ class BoardingHouseForm extends Component
         )->get();
 
         $homeOwners = User::whereHas('userType', function ($query) {
-            $query->where('name', UserTypeEnums::MANAGEMENT);
+            $query->where('serial_id', UserTypeEnums::MANAGEMENT);
         })
             ->select(
                 'id',

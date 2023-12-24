@@ -48,7 +48,8 @@
                             <div class="form-outline" style="display:flex">
                                 <input type="text" wire:model.live.throttle.150ms="search"
                                     placeholder="Search Location..." id="form1" class="form-control"
-                                    style="border-top-right-radius: 0; border-bottom-right-radius: 0;" autocomplete="off"/>
+                                    style="border-top-right-radius: 0; border-bottom-right-radius: 0;"
+                                    autocomplete="off" />
                                 <button type="button" class="btn btn-primary"
                                     style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
                                     <i class="fas fa-search"></i>
@@ -62,7 +63,6 @@
                                 <div class="list-group">
                                     @if ($search)
                                         @forelse ($locations['features'] as $location)
-                                            {{ Log::debug($location) }}
                                             @php
                                                 $data = [
                                                     'longitude' => $location['center'][0] ?? 0,
@@ -90,11 +90,13 @@
                     </div>
 
                     @if ($latitude && $longitude)
-                        <form wire:submit="save" autocomplete="off">
+                        {{-- <form wire:submit="save" autocomplete="off"> --}}
 
                             <div class="form-group">
-                                <label for="formControlRange" class="font-weight-bold">Price Range</label>
-                                <input type="range" class="form-control-range" id="formControlRange">
+                                <label for="formControlRange" class="font-weight-bold">Price Range &#8369;
+                                    {{ number_format($priceRange, 2) }}</label>
+                                <input type="range" wire:model.live="priceRange" class="form-control-range"
+                                    id="formControlRange" min="0" max="50000" step="1000">
                                 <div class="d-flex justify-content-between">
                                     <span>&#8369;{{ number_format(0, 2) }}</span>
                                     <span>&#8369;{{ number_format(25000, 2) }}</span>
@@ -106,25 +108,11 @@
 
                             <div class="form-group">
                                 <label for="address" class="font-weight-bold">Room Type</label>
-                                <select class="form-control">
+                                <select class="form-control" wire:model="roomType">
                                     <option>Select a room</option>
-                                    <option>1 Person</option>
-                                    <option>2 Persons</option>
-                                    <option>3 Persons</option>
-                                    <option>4 Persons</option>
-                                    <option>5 Persons</option>
-                                    <option>6 Persons or more</option>
-                                </select>
-                            </div>
-
-                            <hr>
-
-                            <div class="form-group">
-                                <label for="address" class="font-weight-bold">Sort By</label>
-                                <select class="form-control">
-                                    <option>Recommendation</option>
-                                    <option>By smallest price</option>
-                                    <option>By biggest price</option>
+                                    @foreach ($roomTypes as $roomType)
+                                        <option value="{{ $roomType->id }}">{{ $roomType->name }}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
@@ -132,35 +120,31 @@
 
                             <div class="form-group">
                                 <label for="address2" class="font-weight-bold">Distance to center</label>
-
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Inside the city center
+                                    <input id="3" class="form-check-input" type="radio" wire:model="selectedDistance"
+                                        value="3" id="defaultCheck1">
+                                    <label for="3" class="form-check-label" for="defaultCheck1">
+                                        3 km to center </label>
+                                </div>
+                                <div class="form-check">
+                                    <input id="5" class="form-check-input" type="radio" wire:model="selectedDistance"
+                                        value="5" id="defaultCheck1">
+                                    <label for="5" class="form-check-label" for="defaultCheck1">
+                                        5 km to center
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        <2 km to center </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        2-5 km to center
+                                    <input id="10" class="form-check-input" type="radio" wire:model="selectedDistance"
+                                        value="10" id="defaultCheck1">
+                                    <label for="10" class="form-check-label" for="defaultCheck1">
+                                        10 km to center
                                     </label>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        5-10 km to center
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        > 10 km to center
+                                    <input id="20" class="form-check-input" type="radio" wire:model="selectedDistance"
+                                        value="20" id="defaultCheck1">
+                                    <label for="20" class="form-check-label" for="defaultCheck1">
+                                        20 km to center
                                     </label>
                                 </div>
                             </div>
@@ -169,57 +153,33 @@
 
                             <div class="form-group">
                                 <label for="address2" class="font-weight-bold">Room amenities</label>
-
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Air conditioning
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Ironing facilities
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Refrigerator
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        TV
-                                    </label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value=""
-                                        id="defaultCheck1">
-                                    <label class="form-check-label" for="defaultCheck1">
-                                        Internet access
-                                    </label>
-                                </div>
+                                @foreach ($roomAmenities as $roomAmenity)
+                                    <div class="form-check">
+                                        <input class="form-check-input" id="{{ $roomAmenity->id }}" type="checkbox"
+                                            wire:model="selectedAmenities" value="{{ $roomAmenity->id }}"
+                                            id="defaultCheck1"
+                                            {{ in_array($roomAmenity->id, $selectedAmenities) ? 'checked' : '' }}>
+                                        <label for="{{ $roomAmenity->id }}" class="form-check-label"
+                                            for="defaultCheck1">
+                                            {{ $roomAmenity->name }}
+                                        </label>
+                                    </div>
+                                @endforeach
                             </div>
 
                             <div class="d-flex justify-content-between">
-                                <button type="submit" class="my-3 btn btn-primary">
+                                <button type="submit" wire:click="filterSearch" class="my-3 btn btn-primary">
                                     <i class="fa fa-search" aria-hidden="true"></i>
                                     <span>Search</span>
                                 </button>
 
-                                <button type="submit" class="my-3 btn btn-danger">
+                                <button type="submit" wire:click="clearSearch" class="my-3 btn btn-danger">
                                     <i class="fa fa-eraser" aria-hidden="true"></i>
                                     <span>Clear</span>
                                 </button>
                             </div>
 
-                        </form>
+                        {{-- </form> --}}
                     @endif
                 </div>
             </div>
@@ -231,6 +191,7 @@
 <script data-navigate-track>
     function generateMapBox() {
         Livewire.on('reload-map', (event) => {
+            console.log('IM RELOADED IN HERE1111111111')
             const longitude = event.longitude
             const latitude = event.latitude
             const locations = JSON.parse(event.locations)
@@ -245,11 +206,11 @@
 
 
             const loadLocations = (geoJson) => {
-                console.log('RELOAD MAP: ', geoJson)
                 geoJson.features.forEach((location) => {
                     const {
                         geometry,
-                        properties
+                        properties,
+                        images
                     } = location
                     const {
                         locationId,
@@ -259,16 +220,37 @@
                         link
                     } = properties
 
+                    let imageContent = '';
+
+                    if (images.length) {
+                        images.map((imageDisplay, key) => {
+                            imageContent = imageContent.concat(`<div class="carousel-item ${key === 0 ? 'active' : ''}" style="width: 100%; height: 100%;">
+                                            <img src="${imageDisplay}"
+                                                    class="d-block rounded" style="width: 100%; height: 100%; object-fit:cover;" alt="...">
+                                            </div>`)
+                        })
+                    }
+
                     const content = `
-                        <div style="overflow-y: auto; max-height:350px, width:100%">
+                        <div style="min-height:300px; width:100%;">
                             <div class="my-3 col-lg-3 col-md-3 col-sm-4">
-                                <div class="card" style="width: 250px;">
-                                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE"
-                                        class="card-img-top" alt="...">
+                                <div class="card" style="width: 300px;">
+                                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner" style="height:150px">${imageContent}</div>
+                                        <button class="carousel-control-prev" type="button" data-target="#carouselExampleControls"
+                                            data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-target="#carouselExampleControls"
+                                            data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </button>
+                                    </div>
                                     <div class="card-body">
                                         <h5 class="card-title">${title}</h5>
-                                        <p class="card-text">Some quick example text to build on the Room 1 and make up the bulk of the
-                                            card's content.</p>
+                                        <p class="card-text">${description}</p>
                                         <a href="${link}" class="btn btn-primary" wire:navigate>View Boarding House</a>
                                     </div>
                                 </div>
@@ -291,7 +273,6 @@
 
             loadLocations(locations)
 
-            // light-v10, outdoors-v11, satellite-v9, streets-v11, dark-v10
             const style = 'streets-v11'
             map.setStyle(`mapbox://styles/mapbox/${style}`)
             map.addControl(new mapboxgl.NavigationControl())
@@ -299,11 +280,13 @@
     }
 
     function listener() {
+        console.log('AAA')
         generateMapBox()
     }
 
     document.addEventListener('livewire:navigated', listener)
     document.addEventListener('livewire:navigating', () => {
+        console.log('BBB')
         document.removeEventListener('livewire:navigated', listener)
     })
 
@@ -313,5 +296,97 @@
         searchInput.addEventListener('focusout', (event) => {
             @this.dispatch('hide-results');
         });
+    })
+</script>
+
+<script>
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('reload-map', (event) => {
+            console.log('IM RELOADED IN HERE2222222')
+            const longitude = event.longitude
+            const latitude = event.latitude
+            const locations = JSON.parse(event.locations)
+
+            mapboxgl.accessToken =
+                '{{ env('MAPBOX_API_KEY') }}';
+            map = new mapboxgl.Map({
+                container: 'map',
+                center: [longitude, latitude],
+                zoom: 13,
+            });
+
+
+            const loadLocations = (geoJson) => {
+                geoJson.features.forEach((location) => {
+                    const {
+                        geometry,
+                        properties,
+                        images
+                    } = location
+                    const {
+                        locationId,
+                        title,
+                        image,
+                        description,
+                        link
+                    } = properties
+
+                    let imageContent = '';
+
+                    if (images.length) {
+                        images.map((imageDisplay, key) => {
+                            imageContent = imageContent.concat(`<div class="carousel-item ${key === 0 ? 'active' : ''}" style="width: 100%; height: 100%;">
+                                            <img src="${imageDisplay}"
+                                                    class="d-block rounded" style="width: 100%; height: 100%; object-fit:cover;" alt="...">
+                                            </div>`)
+                        })
+                    }
+
+                    const content = `
+                        <div style="min-height:300px; width:100%;">
+                            <div class="my-3 col-lg-3 col-md-3 col-sm-4">
+                                <div class="card" style="width: 300px;">
+                                    <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                        <div class="carousel-inner" style="height:150px">${imageContent}</div>
+                                        <button class="carousel-control-prev" type="button" data-target="#carouselExampleControls"
+                                            data-slide="prev">
+                                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Previous</span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button" data-target="#carouselExampleControls"
+                                            data-slide="next">
+                                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                            <span class="sr-only">Next</span>
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">${title}</h5>
+                                        <p class="card-text">${description}</p>
+                                        <a href="${link}" class="btn btn-primary" wire:navigate>View Boarding House</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        `
+
+                    const popUp = new mapboxgl.Popup({
+                        offset: 25
+                    }).setHTML(content).setMaxWidth("400px")
+
+                    new mapboxgl.Marker({
+                            color: "#ff3333"
+                        })
+                        .setLngLat(geometry.coordinates)
+                        .setPopup(popUp)
+                        .addTo(map)
+                })
+            }
+
+            loadLocations(locations)
+
+            const style = 'streets-v11'
+            map.setStyle(`mapbox://styles/mapbox/${style}`)
+            map.addControl(new mapboxgl.NavigationControl())
+        })
     })
 </script>

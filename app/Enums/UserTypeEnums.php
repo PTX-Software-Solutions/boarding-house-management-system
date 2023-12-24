@@ -3,7 +3,7 @@
 namespace App\Enums;
 
 class UserTypeEnums {
-    const USER = "CLIENT";
-    const ADMIN = "ADMIN";
-    const MANAGEMENT = "MANAGEMENT";
+    const USER = 1;
+    const ADMIN = 2;
+    const MANAGEMENT = 3;
 }

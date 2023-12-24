@@ -99,7 +99,7 @@ class UserRegister extends Component
         try {
 
             // Default registration user type
-            $userDefaultType = UserType::where('name', UserTypeEnums::USER)->first();
+            $userDefaultType = UserType::where('serial_id', UserTypeEnums::USER)->first();
             $userDefaultStatus = Status::where('serial_id', StatusEnums::ACTIVE)->first();
 
             $user = User::create([

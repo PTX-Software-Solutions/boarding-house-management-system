@@ -74,16 +74,16 @@ class User extends Authenticatable
 
     public function isUser()
     {
-        return $this->userType->name === UserTypeEnums::USER;
+        return $this->userType->serial_id === UserTypeEnums::USER;
     }
 
     public function isAdmin()
     {
-        return $this->userType->name === UserTypeEnums::ADMIN;
+        return $this->userType->serial_id === UserTypeEnums::ADMIN;
     }
 
     public function isManagement()
     {
-        return $this->userType->name === UserTypeEnums::MANAGEMENT;
+        return $this->userType->serial_id === UserTypeEnums::MANAGEMENT;
     }
 }

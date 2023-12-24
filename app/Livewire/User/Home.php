@@ -2,7 +2,9 @@
 
 namespace App\Livewire\User;
 
+use App\Models\Amenity;
 use App\Models\House;
+use App\Models\RoomType;
 use App\Service\MapboxService;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,17 @@ use Livewire\Component;
 
 class Home extends Component
 {
+    #[Url(history: true)]
     public $search;
+
+    public $priceRange = 25000;
+
+    public $roomType;
+
+    public $selectedDistance = 3;
+
+    public $selectedAmenities = [];
+
     public $geoJson;
     public $longitude;      // default longitude of dumaguete city
     public $latitude;       // default latitude of dumaguete city
@@ -29,6 +41,15 @@ class Home extends Component
             $this->isDisplayResult = strlen($value) > 0;
             $this->isSearchClicked = false;
         }
+    }
+
+    public function clearSearch()
+    {
+        $this->search = '';
+        $this->priceRange = 25000;
+        $this->roomType = null;
+        $this->selectedDistance = 0;
+        $this->selectedAmenities = [];
     }
 
     public function forwardGeocode(string|null $query)
@@ -48,10 +69,39 @@ class Home extends Component
         return json_decode($response->getBody(), true);
     }
 
+    public function mount()
+    {
+        if ($this->search) {
+            $reloadData = $this->forwardGeocode($this->search);
+
+            $data = [
+                'longitude' => $reloadData['features'][0]['center'][0] ?? 0,
+                'latitude'  => $reloadData['features'][0]['center'][1] ?? 0,
+                'searchText' => $this->search
+            ];
+
+            $this->changeCoordinates($data);
+        }
+
+    }
+
     #[On('hide-results')]
     public function hideResult()
     {
         $this->isDisplayResult = false;
+    }
+
+    public function filterSearch()
+    {
+        $reloadData = $this->forwardGeocode($this->search);
+
+        $data = [
+            'longitude' => $reloadData['features'][0]['center'][0] ?? 0,
+            'latitude'  => $reloadData['features'][0]['center'][1] ?? 0,
+            'searchText' => $this->search
+        ];
+
+        $this->changeCoordinates($data);
     }
 
     public function changeCoordinates($data)
@@ -63,7 +113,10 @@ class Home extends Component
 
         $haversine = "(6371 * acos(cos(radians(" . $this->latitude . ")) * cos(radians(latitude)) * cos(radians(longitude) - radians(" . $this->longitude . ")) + sin(radians(" . $this->latitude . ")) * sin(radians(latitude))))";
 
-        $houses = House::selectRaw(
+        $houses = House::with(['getHousePhoto' => function($query) {
+            $query->select('houseId', 'imageUrl');
+        }])
+            ->selectRaw(
             "
             id,
             houseName,
@@ -76,12 +129,21 @@ class Home extends Component
             latitude,
             {$haversine} AS distance"
         )
-            ->whereRaw("{$haversine} < ?", [$this->radius])
-            ->orderBy('created_at', 'desc')->get();
+            ->whereRaw("{$haversine} < ?", [(int) $this->selectedDistance])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         $customLocations = [];
 
         foreach ($houses as $house) {
+            $images = [];
+            
+            if ($house->getHousePhoto) {
+                foreach($house->getHousePhoto as $photo) {
+                    array_push($images, asset('storage/images/' . $photo->imageUrl));
+                }
+            }
+
             $customLocations[] = [
                 'type' => 'Feature',
                 'geometry' => [
@@ -93,8 +155,9 @@ class Home extends Component
                     'title' => $house->houseName,
                     'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE',
                     'description' => $house->address . ' ' . $house->address2,
-                    'link'  => url("/boarding-houses/$house->id")
-                ]
+                    'link'  => url("/boarding-houses/$house->id?search=$this->search")
+                ],
+                'images' => $images
             ];
         }
 
@@ -109,58 +172,16 @@ class Home extends Component
         $this->dispatch('reload-map', longitude: $this->longitude, latitude: $this->latitude, locations: $geoJson);
     }
 
-    // public function mapRender()
-    // {
-    //     $haversine = "(6371 * acos(cos(radians(" . $this->latitude . ")) * cos(radians(latitude)) * cos(radians(longitude) - radians(" . $this->longitude . ")) + sin(radians(" . $this->latitude . ")) * sin(radians(latitude))))";
-
-    //     $houses = House::selectRaw(
-    //         "
-    //         id,
-    //         houseName,
-    //         contact,
-    //         address,
-    //         address2,
-    //         city,
-    //         zip,
-    //         longitude,
-    //         latitude,
-    //         {$haversine} AS distance"
-    //     )
-    //         ->whereRaw("{$haversine} < ?", [$this->radius])
-    //         ->orderBy('created_at', 'desc')->get();
-
-    //     $customLocations = [];
-
-    //     foreach ($houses as $house) {
-    //         $customLocations[] = [
-    //             'type' => 'Feature',
-    //             'geometry' => [
-    //                 'coordinates' => [$house->longitude, $house->latitude],
-    //                 'type' => 'Point'
-    //             ],
-    //             'properties' => [
-    //                 'locationId' => $house->id,
-    //                 'title' => $house->houseName,
-    //                 'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE',
-    //                 'description' => $house->address . ' ' . $house->address2,
-    //             ]
-    //         ];
-    //     }
-
-    //     $geoLocation = [
-    //         'type' => 'FeatureCollection',
-    //         'features' => $customLocations
-    //     ];
-
-    //     $geoJson = collect($geoLocation)->toJson();
-    //     $this->geoJson = $geoJson;
-    // }
-
     #[Layout('components.layouts.userAuth')]
     public function render()
     {
+        $roomTypes = RoomType::select('id', 'name')->get();
+        $roomAmenities = Amenity::select('id', 'name')->get();
+
         return view('livewire.user.home', [
-            'locations' => $this->forwardGeocode($this->search)
+            'locations'     => $this->forwardGeocode($this->search),
+            'roomTypes'     => $roomTypes,
+            'roomAmenities' => $roomAmenities
         ]);
     }
 }

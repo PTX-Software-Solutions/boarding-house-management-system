@@ -4,7 +4,10 @@ use App\Livewire\Admin\BoardingHouse as AdminBoardingHouse;
 use App\Livewire\Admin\BoardingHouseForm;
 use App\Livewire\Admin\BoardingHouseRoom;
 use App\Livewire\Admin\BoardingHouseRoomForm;
+use App\Livewire\Admin\Confirmation;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Reservation as AdminReservation;
+use App\Livewire\Admin\ReservationForm;
 use App\Livewire\Admin\UserForm;
 use App\Livewire\Admin\Users;
 use App\Livewire\Auth\Admin\AdminLogin;
@@ -65,6 +68,21 @@ Route::group([
         Route::get('/create', UserForm::class)->name('admin.users.create');
         Route::get('/edit/{id}', UserForm::class)->name('admin.users.edit');
     });
+
+    Route::group([
+        'prefix' => 'reservations'
+    ], function() {
+        Route::get('/', AdminReservation::class)->name('admin.reservations');
+        Route::get('/create', ReservationForm::class)->name('admin.reservation.create');
+        Route::get('/edit/{id}', ReservationForm::class)->name('admin.reservation.edit');
+    });
+
+    Route::group([
+        'prefix' => 'confirmations'
+    ], function() {
+        Route::get('/', Confirmation::class)->name('admin.confirmations');
+    });
+
 });
 
 // MANAGEMENT GUEST
