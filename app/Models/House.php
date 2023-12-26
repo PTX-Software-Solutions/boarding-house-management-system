@@ -47,8 +47,23 @@ class House extends Model
         return $this->hasMany(NearbyAttraction::class, 'houseId', 'id');
     }
 
+    public function getHomeRooms()
+    {
+        return $this->hasMany(Room::class, 'houseId', 'id');
+    }
+
     public function getRooms()
     {
         return $this->hasMany(Room::class, 'roomId', 'id');
+    }
+
+    public function getSocialLinksInOrder()
+    {
+        return $this->hasMany(SocialMedia::class, 'houseId', 'id')->orderBy('order', 'ASC');
+    }
+
+    public function getSocialLinks()
+    {
+        return $this->hasMany(SocialMedia::class, 'houseId', 'id');
     }
 }

@@ -19,14 +19,19 @@ class Home extends Component
     #[Url(history: true)]
     public $search;
 
+    #[Url(history: true)]
     public $priceRange = 25000;
 
+    #[Url(history: true)]
     public $roomType;
 
+    #[Url(history: true)]
     public $selectedDistance = 3;
 
+    #[Url(history: true)]
     public $selectedAmenities = [];
 
+    public $bhCount = null;
     public $geoJson;
     public $longitude;      // default longitude of dumaguete city
     public $latitude;       // default latitude of dumaguete city
@@ -43,14 +48,6 @@ class Home extends Component
         }
     }
 
-    public function clearSearch()
-    {
-        $this->search = '';
-        $this->priceRange = 25000;
-        $this->roomType = null;
-        $this->selectedDistance = 0;
-        $this->selectedAmenities = [];
-    }
 
     public function forwardGeocode(string|null $query)
     {
@@ -71,7 +68,8 @@ class Home extends Component
 
     public function mount()
     {
-        if ($this->search) {
+        if ($this->search || $this->selectedAmenities) {
+
             $reloadData = $this->forwardGeocode($this->search);
 
             $data = [
@@ -82,7 +80,6 @@ class Home extends Component
 
             $this->changeCoordinates($data);
         }
-
     }
 
     #[On('hide-results')]
@@ -113,11 +110,22 @@ class Home extends Component
 
         $haversine = "(6371 * acos(cos(radians(" . $this->latitude . ")) * cos(radians(latitude)) * cos(radians(longitude) - radians(" . $this->longitude . ")) + sin(radians(" . $this->latitude . ")) * sin(radians(latitude))))";
 
-        $houses = House::with(['getHousePhoto' => function($query) {
-            $query->select('houseId', 'imageUrl');
-        }])
+        $houses = House::whereHas('getHomeRooms', function ($query) {
+            $query->when($this->roomType, function ($query1) {
+                $query1->where('roomTypeId', $this->roomType);
+            })
+                ->whereHas('amenities', function ($query2) {
+                    $query2->when($this->selectedAmenities, function ($query3) {
+                        $query3->whereIn('id', $this->selectedAmenities);
+                    });
+                })
+                ->where('monthlyDeposit', '<=', $this->priceRange);
+        })
+            ->with(['getHousePhoto' => function ($query) {
+                $query->select('houseId', 'imageUrl');
+            }])
             ->selectRaw(
-            "
+                "
             id,
             houseName,
             contact,
@@ -128,7 +136,7 @@ class Home extends Component
             longitude,
             latitude,
             {$haversine} AS distance"
-        )
+            )
             ->whereRaw("{$haversine} < ?", [(int) $this->selectedDistance])
             ->orderBy('created_at', 'desc')
             ->get();
@@ -137,11 +145,17 @@ class Home extends Component
 
         foreach ($houses as $house) {
             $images = [];
-            
+
             if ($house->getHousePhoto) {
-                foreach($house->getHousePhoto as $photo) {
+                foreach ($house->getHousePhoto as $photo) {
                     array_push($images, asset('storage/images/' . $photo->imageUrl));
                 }
+            }
+    
+            $selectedAmenityLink = '';
+
+            foreach ($this->selectedAmenities as $key => $amenity) {
+                $selectedAmenityLink .= '&selectedAmenities[' . $key . ']=' . $amenity;
             }
 
             $customLocations[] = [
@@ -155,7 +169,14 @@ class Home extends Component
                     'title' => $house->houseName,
                     'image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSO_Vl_AsUMMjBlWvggrRjyyyMVw9HF4y8sRLtbJyJOHlfPc1zcfB4rFBTmn_r0eTvCpWE',
                     'description' => $house->address . ' ' . $house->address2,
-                    'link'  => url("/boarding-houses/$house->id?search=$this->search")
+                    'link'  => url(
+                        '/boarding-houses/' . $house->id .
+                            '?search=' . $this->search .
+                            '&priceRange=' . $this->priceRange .
+                            '&roomType=' . $this->roomType .
+                            '&selectedDistance=' . $this->selectedDistance .
+                            $selectedAmenityLink
+                    )
                 ],
                 'images' => $images
             ];
@@ -166,6 +187,7 @@ class Home extends Component
             'features' => $customLocations
         ];
 
+        $this->bhCount = count($customLocations);
         $geoJson = collect($geoLocation)->toJson();
         $this->geoJson = $geoJson;
 

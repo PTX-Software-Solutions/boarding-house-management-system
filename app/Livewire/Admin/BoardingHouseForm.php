@@ -7,6 +7,8 @@ use App\Models\DistanceTypes;
 use App\Models\House;
 use App\Models\HouseImage;
 use App\Models\NearbyAttraction;
+use App\Models\SocialMedia;
+use App\Models\SocialMediaType;
 use App\Models\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -71,6 +73,13 @@ class BoardingHouseForm extends Component
     ])]
     public $attractionLists = [];
 
+    #[Rule([
+        'socialLinks' => 'nullable|array',
+        'socialLinks.*.link' => 'nullable',
+        'socialLinks.*.socialType' => 'nullable',
+    ])]
+    public $socialLinks = [];
+
     public $currentTab = 1;
 
     protected $listeners = [
@@ -96,6 +105,14 @@ class BoardingHouseForm extends Component
         ];
     }
 
+    public function addSocialLink()
+    {
+        $this->socialLinks[] = [
+            'link'  => null,
+            'socialType' => null
+        ];
+    }
+
     public function removeAttraction($index)
     {
         unset($this->attractionLists[$index]);
@@ -112,6 +129,12 @@ class BoardingHouseForm extends Component
             $q1->select('name', 'houseId', 'distance', 'distanceTypeId');
         }, 'getHousePhoto' => function ($q2) {
             $q2->select('houseId', 'imageUrl');
+        }, 'getSocialLinksInOrder' => function ($q3) {
+            $q3->select(
+                'link',
+                'socialMediaTypeId',
+                'houseId'
+            );
         }])->findOrFail($id);
 
         $this->id = $house->id;
@@ -141,6 +164,16 @@ class BoardingHouseForm extends Component
         if (!$house->getHousePhoto->isEmpty()) {
             foreach ($house->getHousePhoto  as $key => $housePhoto) {
                 $this->oldImage[$key] = $housePhoto->imageUrl;
+            }
+        }
+
+        // Get the social links
+        if (!$house->getSocialLinksInOrder->isEmpty()) {
+            foreach ($house->getSocialLinksInOrder as $key => $socialLink) {
+                $this->socialLinks[$key] = [
+                    'link'  => $socialLink->link,
+                    'socialType' => $socialLink->socialMediaTypeId
+                ];
             }
         }
     }
@@ -189,7 +222,7 @@ class BoardingHouseForm extends Component
 
 
             if ($this->id) {
-                $bh = House::with('getNearbyAttractions', 'getHousePhoto')->findOrFail($this->id);
+                $bh = House::with('getNearbyAttractions', 'getHousePhoto', 'getSocialLinks')->findOrFail($this->id);
 
                 $bh->update([
                     'userId'    => $data['userId'],
@@ -220,6 +253,22 @@ class BoardingHouseForm extends Component
                     }
                 }
 
+                // Remove all existing social links and insert new data
+                if (!$bh->getSocialLinks->isEmpty()) {
+                    foreach ($bh->getSocialLinks as $socialLink) {
+                        $socialLink->delete();
+                    }
+
+                    foreach ($data['socialLinks'] as $key => $social) {
+                        SocialMedia::create([
+                            'link' => $social['link'],
+                            'order' => $key,
+                            'houseId' => $bh->id,
+                            'socialMediaTypeId' => $social['socialType']
+                        ]);
+                    }
+                }
+
 
                 // Contains new image photo
                 if (!is_null($data['uploadImage'])) {
@@ -241,7 +290,6 @@ class BoardingHouseForm extends Component
 
                 DB::commit();
                 $this->dispatch('success-update');
-
             } else {
                 $house = House::create([
                     'userId'    => $data['userId'],
@@ -276,11 +324,22 @@ class BoardingHouseForm extends Component
                     }
                 }
 
+                if (!empty($data['socialLinks'])) {
+                    foreach ($data['socialLinks'] as $index => $socialLink) {
+                        SocialMedia::create([
+                            'link' => $socialLink['link'],
+                            'order' => $index,
+                            'houseId' => $house->id,
+                            'socialMediaTypeId' => $socialLink['socialType']
+                        ]);
+                    }
+                }
+
                 DB::commit();
                 $this->dispatch('success-insert');
             }
 
-                return $this->redirect('/admin/boarding-houses', navigate: true);
+            return $this->redirect('/admin/boarding-houses', navigate: true);
         } catch (Exception $e) {
             Log::debug($e);
             DB::rollBack();
@@ -299,7 +358,16 @@ class BoardingHouseForm extends Component
         $distanceTypes = DistanceTypes::select(
             'id',
             'name'
-        )->get();
+        )
+            ->orderBy('serial_id', 'ASC')
+            ->get();
+
+        $socialMediaTypes = SocialMediaType::select(
+            'id',
+            'name'
+        )
+            ->orderBy('serial_id', 'ASC')
+            ->get();
 
         $homeOwners = User::whereHas('userType', function ($query) {
             $query->where('serial_id', UserTypeEnums::MANAGEMENT);
@@ -313,8 +381,9 @@ class BoardingHouseForm extends Component
             ->get();
 
         return view('livewire.admin.boarding-house-form', [
-            'homeOwners'    => $homeOwners,
-            'distanceTypes' => $distanceTypes
+            'homeOwners'        => $homeOwners,
+            'distanceTypes'     => $distanceTypes,
+            'socialMediaTypes'  => $socialMediaTypes
         ]);
     }
 }

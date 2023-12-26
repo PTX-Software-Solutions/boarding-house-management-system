@@ -41,19 +41,47 @@
                             </div>
                             <div class="card-body">
 
-                                <a class="nav-link" href="#" id="userDropdown" role="button"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <figure class="img-profile rounded-circle avatar font-weight-bold" data-initial="">
-                                        <img src="{{ asset('storage/images/' . $room->getHouse->getUser->profileImage) }}"
-                                            alt="">
-                                    </figure>
-                                    <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hosted by
-                                        {{ $room->getHouse->getUser->firstName }}
-                                        {{ $room->getHouse->getUser->lastName }}</span>
-                                </a>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <a class="nav-link" href="#" id="userDropdown" role="button"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <figure class="img-profile rounded-circle avatar font-weight-bold"
+                                            data-initial="">
+                                            <img src="{{ asset('storage/images/' . $room->getHouse->getUser->profileImage) }}"
+                                                alt="">
+                                        </figure>
+                                        <span class="mr-2 d-none d-lg-inline text-gray-600 small">Hosted by
+                                            {{ $room->getHouse->getUser->firstName }}
+                                            {{ $room->getHouse->getUser->lastName }}</span>
+                                    </a>
+
+                                    <div class="d-flex flex-column">
+                                        <span>
+                                            <i class="fa fa-phone" aria-hidden="true"></i>
+                                            {{ $room->getHouse->contact }}
+                                        </span>
+                                        <div class="d-flex">
+                                            @foreach ($room->getHouse->getSocialLinks as $social)
+                                                <span class="mx-1" style="font-size: 18px;">
+                                                    <a href="{{ $social->link }}"
+                                                        style="text-decoration: none;
+                                                        color: inherit;">
+                                                        @if ($social->getSocialMediaType->serial_id === 1)
+                                                            <i class="fa-brands fa-facebook"></i>
+                                                        @elseif($social->getSocialMediaType->serial_id === 2)
+                                                            <i class="fa-brands fa-instagram"></i>
+                                                        @elseif($social->getSocialMediaType->serial_id === 3)
+                                                            <i class="fa-brands fa-twitter"></i>
+                                                        @endif
+                                                    </a>
+                                                </span>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+
 
                                 <hr>
-
+                                <h6>Nearby Attractions</h6>
                                 <ul>
                                     @foreach ($room->getHouse->nearbyAttraction as $attraction)
                                         <li> {{ $attraction->distance }} {{ $attraction->distanceTypes->name }} away
@@ -114,19 +142,33 @@
                         <div class="form-group">
                             <label for="address2" class="font-weight-bold">Payment</label>
 
+                            @php
+                                $total = $room->monthlyDeposit * 2;
+                            @endphp
                             <div class="d-flex justify-content-between">
-                                <p>Total before taxes</p>
+                                <p>Total Monthly Deposit</p>
                                 <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
                             </div>
+                            <div class="d-flex justify-content-between">
+                                <p>One Month Advance</p>
+                                <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
+                            </div>
+                            <hr>
+
                             {{-- <div class="d-flex justify-content-between">
                                 <p>BH finder fee</p>
                                 <span><span>&#8369;{{ number_format(500, 2) }}</span></span>
                             </div> --}}
+                            <div class="d-flex justify-content-between">
+                                <p>Total</p>
+                                <span><span>&#8369;{{ number_format($total, 2) }}</span></span>
+                            </div>
                         </div>
 
                         <hr>
 
-                        <button type="submit" class="my-3 btn btn-danger d-block w-100" {{ in_array($room->id, $reservations) ? 'disabled' : '' }}>
+                        <button type="submit" class="my-3 btn btn-danger d-block w-100"
+                            {{ in_array($room->id, $reservations) ? 'disabled' : '' }}>
                             <i class="fa fa-book" aria-hidden="true"></i>
                             <span>Reserve</span>
                         </button>

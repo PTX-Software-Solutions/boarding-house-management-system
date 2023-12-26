@@ -15,8 +15,8 @@
     <!-- Nav Item - Dashboard -->
     <li class="nav-item {{ Nav::isRoute('user.home') }}">
         <a class="nav-link" href="{{ route('user.home') }}" wire:navigate>
-            <i class="fa fa-home" aria-hidden="true"></i>
-            <span>{{ __('Home') }}</span></a>
+            <i class="fa fa-search" aria-hidden="true"></i>
+            <span>{{ __('Find Boarding House') }}</span></a>
     </li>
 
     <li class="nav-item {{ Nav::isRoute('user.reservation*') }}">
@@ -25,10 +25,10 @@
             <span>{{ __('Reservations') }}</span></a>
     </li>
 
-    <li class="nav-item {{ Nav::isRoute('user.history') }}">
-        <a class="nav-link" href="{{ route('user.history') }}" wire:navigate>
+    <li class="nav-item {{ Nav::isRoute('user.transaction') }}">
+        <a class="nav-link" href="{{ route('user.transaction') }}" wire:navigate>
             <i class="fas fa-ticket"></i>
-            <span>{{ __('History') }}</span></a>
+            <span>{{ __('Transactions') }}</span></a>
     </li>
 
     <!-- Divider -->

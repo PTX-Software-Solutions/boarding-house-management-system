@@ -1,8 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Reservations') }}</h1>
-    <span class="text-danger">Automatically cancelled already passed check-in dates</span>
+    <h1 class="h3 mb-4 text-gray-800">{{ __('Transactions') }}</h1>
 
     <table class="table">
         <thead class="thead-light">
@@ -11,7 +10,8 @@
                 <th scope="col">Room</th>
                 <th scope="col">Check In</th>
                 <th scope="col">Check Out</th>
-                <th scope="col" class="text-center">Action</th>
+                <th scope="col">Status</th>
+                <th scope="col" class="text-center">Rate</th>
             </tr>
         </thead>
         <tbody>
@@ -21,14 +21,37 @@
                     <td><span class="badge badge-primary">{{ $reservation->getRoom->name }}</span></td>
                     <td>{{ \Carbon\Carbon::parse($reservation->checkIn)->format('Y-m-d') }}</td>
                     <td>{{ $reservation->checkOut ? \Carbon\Carbon::parse($reservation->checkOut)->format('Y-m-d') : '-' }}
+                    <td>
+                        <span
+                            class="badge {{ $reservation->getStatus->serial_id === 3 ? 'badge-danger' : 'badge-success' }}">
+                            {{ $reservation->getStatus->name }}
+                        </span>
                     </td>
                     <td class="text-center">
-                        <button wire:click="cancelReservation('{{ $reservation->id }}')"
-                            class="btn btn-danger delete-header m-1 btn-sm text-white" title="Edit"
-                            data-toggle="modal" data-target="#boardingHouseModal">
-                            <i class="fa fa-ban" aria-hidden="true"></i>
-                            Cancel
-                        </button>
+                        @if ($reservation->getStatus->serial_id === 2)
+                            @if (!$isRatingClicked || $selectedToggleReservation !== $reservation->id)
+                                <button wire:click="toggleReservation({{ json_encode($reservation->id) }})"
+                                    class="btn btn-primary delete-header m-1 btn-sm text-white" title="Edit"
+                                    data-toggle="modal" data-target="#boardingHouseModal">
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                    Rate Me
+                                </button>
+                            @else
+                                @if ($reservation->id === $selectedToggleReservation)
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @php
+                                            $data = [
+                                                'rate' => $i,
+                                                'reservationId' => $reservation->id,
+                                            ];
+                                        @endphp
+                                        <span wire:click.prevent="rateReservation({{ json_encode($data) }})"
+                                            @if ($rating >= $i) class="text-warning" @endif
+                                            style="cursor:pointer; font-size: 18px;">&#9733;</span>
+                                    @endfor
+                                @endif
+                            @endif
+                        @endif
                     </td>
                 </tr>
             @empty
@@ -60,15 +83,17 @@
             }, 1000)
         })
 
-        Livewire.on('cancelRes', (event) => {
+        Livewire.on('rateReservation', (event) => {
             Swal.fire({
-                title: 'Are you sure?',
-                text: "You won't be able to revert this!",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, cancel it!'
+                title: "Enter your password",
+                input: "password",
+                inputLabel: "Password",
+                inputPlaceholder: "Enter your password",
+                inputAttributes: {
+                    maxlength: "10",
+                    autocapitalize: "off",
+                    autocorrect: "off"
+                }
             }).then((result) => {
                 if (result.isConfirmed) {
                     @this.dispatch("cancelReserv", {

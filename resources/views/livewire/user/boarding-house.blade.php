@@ -171,8 +171,7 @@
                             @foreach ($rooms as $room)
                                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
                                     <div class="card" style="width: 16rem;">
-                                        <div id="carouselExampleControls" class="carousel slide"
-                                            data-ride="carousel">
+                                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                                             <div class="carousel-inner" style="max-height:150px">
                                                 @foreach ($room?->getRoomImages as $index => $image)
                                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}"
@@ -201,10 +200,40 @@
                                                 <h5 class="card-title">{{ $room->name }}</h5>
                                                 <p class="font-weight-light">{{ $room?->getRoomType->name }}</p>
                                             </div>
-                                            <p class="card-text">&#8369; {{ number_format($room->monthlyDeposit, 2) }}
-                                            </p>
-                                            <a href="{{ url("/boarding-houses/$room->houseId" . "/room-details/$room->id/?search=$search") }}"
-                                                class="btn btn-primary">View Room</a>
+
+                                            <div class="d-flex flex-wrap">
+                                                @foreach ($room->amenities as $amenity)
+                                                    <span style="position: relative;"
+                                                        class="m-1 {{ in_array($amenity->id, $selectedAmenities) ? 'badge badge-warning' : 'badge badge-info' }}">
+                                                        {{ $amenity->name }}
+
+                                                        @if (in_array($amenity->id, $selectedAmenities))
+                                                            <span style="position: absolute; top:-40%; right:-6%;" class="text-danger"><i
+                                                                    class="fa fa-star" aria-hidden="true"></i></span>
+                                                        @endif
+                                                    </span>
+                                                @endforeach
+                                            </div>
+
+                                            <p class="card-text">Monthly Deposit &#8369;
+                                                {{ number_format($room->monthlyDeposit, 2) }}
+                                                @php
+                                                    $linkSelectedAmenity = '';
+
+                                                    foreach ($selectedAmenities as $key => $amenity) {
+                                                        $linkSelectedAmenity .= '&selectedAmenities[' . $key . ']=' . $amenity;
+                                                    }
+                                                @endphp
+
+                                                <a href="{{ url(
+                                                    "/boarding-houses/$room->houseId" .
+                                                        "/room-details/$room->id/?search=$search" .
+                                                        "&priceRange=$this->priceRange" .
+                                                        "&roomType=$this->roomType" .
+                                                        "&selectedDistance=$this->selectedDistance" .
+                                                        $linkSelectedAmenity,
+                                                ) }}"
+                                                    class="btn btn-primary">View Room</a>
                                         </div>
                                     </div>
                                 </div>
@@ -213,10 +242,6 @@
                     </div>
                     <div class="d-flex justify-content-center">
                         {{ $rooms->links() }}
-                        {{-- <button type="submit" class="my-3 btn btn-primary">
-                            <i class="fa fa-search" aria-hidden="true"></i>
-                            <span>Show More</span>
-                        </button> --}}
                     </div>
                 </div>
 

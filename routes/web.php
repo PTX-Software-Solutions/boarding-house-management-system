@@ -18,10 +18,10 @@ use App\Livewire\Houses\HousesForm;
 use App\Livewire\Houses\HousesTable;
 use App\Livewire\Management\Dashboard;
 use App\Livewire\User\BoardingHouse;
-use App\Livewire\User\History;
 use App\Livewire\User\Home;
 use App\Livewire\User\Reservation;
 use App\Livewire\User\RoomDetails;
+use App\Livewire\User\Transaction;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -119,7 +119,7 @@ Route::group([
     Route::get('/boarding-houses/{id}', BoardingHouse::class)->name('user.boarding-house');
     Route::get('/boarding-houses/{id}/room-details/{roomId}', RoomDetails::class)->name('user.room-details');
     Route::get('/reservations', Reservation::class)->name('user.reservation');
-    Route::get('/history', History::class)->name('user.history');
+    Route::get('/transaction', Transaction::class)->name('user.transaction');
 
     Route::get('/boarding-house', HousesTable::class)->name('boarding.house');
     Route::get('/boarding-house/create', HousesForm::class)->name('boarding.house.form.create');

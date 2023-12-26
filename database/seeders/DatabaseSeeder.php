@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
             DistanceTypesSeeder::class,
             StatusSeeder::class,
             RoomTypesSeeder::class,
-            AmenitiesSeeder::class
+            AmenitiesSeeder::class,
+            SocialMediaSeeder::class
         ]);
     }
 }

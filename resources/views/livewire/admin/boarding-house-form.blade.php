@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    {{-- @if ($errors->any())
+    @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
                 @foreach ($errors->all() as $error)
@@ -23,7 +23,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif --}}
+    @endif
 
     <div class="row">
         <div class="col-lg-7">
@@ -62,6 +62,11 @@
                     <a class="nav-link {{ $currentTab === 3 ? 'active' : '' }}" id="profile-tab" data-toggle="tab"
                         wire:click="changeTab(3)" href="#profile" role="tab" aria-controls="profile"
                         aria-selected="false">Photo(s)</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $currentTab === 4 ? 'active' : '' }}" id="profile-tab" data-toggle="tab"
+                        wire:click="changeTab(4)" href="#profile" role="tab" aria-controls="profile"
+                        aria-selected="false">Social Media Link(s)</a>
                 </li>
             </ul>
             <form wire:submit="save" autocomplete="off">
@@ -117,7 +122,7 @@
                                 <div class="form-group">
                                     <label for="address">Address</label>
                                     <input type="text" wire:model="address" class="form-control" id="address"
-                                        placeholder="1234 Main St">
+                                        placeholder="Street, Barangay">
                                     <div>
                                         @error('address')
                                             <p class="text-danger">{{ $message }}</p>
@@ -127,7 +132,7 @@
                                 <div class="form-group">
                                     <label for="address2">Address 2</label>
                                     <input type="text" wire:model="address2" class="form-control" id="address2"
-                                        placeholder="Apartment, studio, or floor">
+                                        placeholder="House #, Apartmentstudio, or floor">
                                     <div>
                                         @error('address2')
                                             <p class="text-danger">{{ $message }}</p>
@@ -326,6 +331,78 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Social Media --}}
+                    <div class="tab-pane fade {{ $currentTab === 4 ? 'show active' : '' }}" id="profile"
+                        role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <button type="button" wire:click="addSocialLink" class="btn btn-primary my-3">
+                                        <i class="fas fa-plus-circle"></i>
+                                        Add</button>
+                                </div>
+
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Link</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($socialLinks as $index => $socialLink)
+                                            <tr>
+                                                <th scope="row">
+                                                    <div class="form-group">
+                                                        <input type="text"
+                                                            wire:model="socialLinks.{{ $index }}.link"
+                                                            class="form-control" aria-describedby="emailHelp"
+                                                            placeholder="...">
+                                                    </div>
+                                                    <small>
+                                                        @error("socialLinks.{$index}.link")
+                                                            <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </small>
+                                                </th>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <select class="form-control"
+                                                            wire:model="socialLinks.{{ $index }}.socialType"
+                                                            id="exampleFormControlSelect1">
+                                                            <option>-- Select type --</option>
+                                                            @foreach ($socialMediaTypes as $socialMediaType)
+                                                                <option value="{{ $socialMediaType->id }}">
+                                                                    {{ $socialMediaType->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <small>
+                                                        @error("socialLinks.{$index}.socialType")
+                                                            <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <a href="#"
+                                                        wire:click="removeAttraction({{ $index }})">
+                                                        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="text-center" colspan="3">No data!</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

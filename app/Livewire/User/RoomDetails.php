@@ -20,6 +20,18 @@ class RoomDetails extends Component
     #[Url(history: true)]
     public $search;
 
+    #[Url(history: true)]
+    public $priceRange;
+
+    #[Url(history: true)]
+    public $roomType;
+
+    #[Url(history: true)]
+    public $selectedDistance;
+
+    #[Url(history: true)]
+    public $selectedAmenities;
+
     public $houseId;
 
     public $roomId;
@@ -37,11 +49,32 @@ class RoomDetails extends Component
     {
         $this->houseId = $id;
         $this->roomId = $roomId;
+
+        $this->selectedAmenities = $this->selectedAmenities ?? [];
     }
 
     public function back()
     {
-        return $this->redirect("/boarding-houses/" . $this->houseId . "?search=$this->search", navigate: true);
+        $linkSelectedAmenity = '';
+        // dd($this->selectedAmenities);
+        // $this->selectedAmenities = !is_null($this->selectedAmenities) ? explode(",", $this->selectedAmenities) : [];
+
+        foreach ($this->selectedAmenities as $key => $amenity) {
+            $linkSelectedAmenity .= '&selectedAmenities[' . $key . ']=' . $amenity;
+        }
+
+
+        // dd($linkSelectedAmenity, $this->selectedAmenities);
+
+        return $this->redirect(
+            '/boarding-houses/' . $this->houseId .
+                '?search=' . $this->search .
+                '&priceRange=' . $this->priceRange .
+                '&roomType=' . $this->roomType .
+                '&selectedDistance=' . $this->selectedDistance .
+                $linkSelectedAmenity,
+            navigate: true
+        );
     }
 
     public function save()
@@ -81,7 +114,8 @@ class RoomDetails extends Component
         }, 'getHouse' => function ($query1) {
             $query1->select(
                 'id',
-                'userId'
+                'userId',
+                'contact'
             )
                 ->with(['getUser' => function ($query2) {
                     $query2->select(
@@ -104,16 +138,31 @@ class RoomDetails extends Component
                                 'name'
                             );
                         }]);
+                }, 'getSocialLinks' => function ($query5) {
+                    $query5->select(
+                        'houseId',
+                        'link',
+                        'socialMediaTypeId'
+                    )
+                        ->with(['getSocialMediaType' => function ($query6) {
+                            $query6->select(
+                                'id',
+                                'name',
+                                'serial_id'
+                            );
+                        }]);
                 }]);
         }, 'amenities'])->findOrFail($this->roomId);
+
+        // dd($room);
 
         $statuses = Status::whereIn('serial_id', [StatusEnums::PENDING, StatusEnums::FOR_APPROVAL])->pluck('id')->toArray();
 
         $reservations = Reservation::where('houseId', $this->houseId)
-                                        ->where('userId', Auth::id())
-                                        ->whereIn('statusId', $statuses)
-                                        ->pluck('roomId')
-                                        ->toArray();
+            ->where('userId', Auth::id())
+            ->whereIn('statusId', $statuses)
+            ->pluck('roomId')
+            ->toArray();
 
         return view('livewire.user.room-details', [
             'room'          => $room,
