@@ -16,6 +16,7 @@ class Room extends Model
         'monthlyDeposit',
         'houseId',
         'roomTypeId',
+        'paymentAgreementId',
         'statusId'
     ];
 
@@ -47,5 +48,15 @@ class Room extends Model
     public function getStatus()
     {
         return $this->hasOne(Status::class, 'id', 'statusId');
+    }
+
+    public function getPaymentAgreement()
+    {
+        return $this->hasOne(PaymentAgreementType::class, 'id', 'paymentAgreementId');
+    }
+
+    public function getRoomUtilities()
+    {
+        return $this->hasMany(RoomUtility::class, 'roomId', 'id');
     }
 }

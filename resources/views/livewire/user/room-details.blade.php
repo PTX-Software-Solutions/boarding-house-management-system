@@ -60,7 +60,7 @@
                                             {{ $room->getHouse->contact }}
                                         </span>
                                         <div class="d-flex">
-                                            @foreach ($room->getHouse->getSocialLinks as $social)
+                                            @foreach ($room->getHouse->getSocialLinksInOrder as $social)
                                                 <span class="mx-1" style="font-size: 18px;">
                                                     <a href="{{ $social->link }}"
                                                         style="text-decoration: none;
@@ -124,11 +124,14 @@
                             <div class="col-md-6 mb-3">
                                 <label for="validationTooltip02">CHECK-OUT(Optional)</label>
                                 <input type="date" wire:model="checkOut" class="form-control">
+                                @error('checkOut')
+                                    <p class="text-danger">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="note">Note</label>
+                            <label for="note">Note(Optional)</label>
                             <textarea type="text" wire:model="note" class="form-control" id="note" autocomplete="off"></textarea>
                             <div>
                                 @error('note')
@@ -146,26 +149,47 @@
                                 $total = $room->monthlyDeposit * 2;
                             @endphp
                             <div class="d-flex justify-content-between">
+                                <p>{{ $room->getPaymentAgreement->name }}</p>
+                                <span><span>&#8369; {{ number_format($total, 2) }}</span></span>
+                            </div>
+                            {{-- <div class="d-flex justify-content-between">
                                 <p>Total Monthly Deposit</p>
                                 <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
-                            </div>
-                            <div class="d-flex justify-content-between">
+                            </div> --}}
+                            {{-- <div class="d-flex justify-content-between">
                                 <p>One Month Advance</p>
                                 <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
-                            </div>
-                            <hr>
+                            </div> --}}
+
+                            @if ($room->getRoomUtilities->isNotEmpty())
+                                <hr>
+                                <label for="address2" class="font-weight-bold">Room Utilities</label>
+                                @foreach ($room->getRoomUtilities as $utilities)
+                                    <div class="d-flex justify-content-between">
+                                        <p>{{ $utilities->getRoomUtilityType->name }}
+                                            [{{ $utilities->getRoomUtilityScope->name }}]</p>
+                                        @php
+                                            $total += !is_null($utilities->price) ? $utilities->price : 0;
+                                        @endphp
+                                        <span>
+                                            {!! $utilities->price ? '&#8369;' . number_format($utilities->price, 2) : '---' !!}
+                                        </span>
+                                    </div>
+                                @endforeach
+                            @endif
 
                             {{-- <div class="d-flex justify-content-between">
                                 <p>BH finder fee</p>
                                 <span><span>&#8369;{{ number_format(500, 2) }}</span></span>
                             </div> --}}
-                            <div class="d-flex justify-content-between">
-                                <p>Total</p>
-                                <span><span>&#8369;{{ number_format($total, 2) }}</span></span>
-                            </div>
                         </div>
 
                         <hr>
+
+                        <div class="d-flex justify-content-between">
+                            <p>Partial Total</p>
+                            <span>&#8369; {{ number_format($total, 2) }}</span>
+                        </div>
 
                         <button type="submit" class="my-3 btn btn-danger d-block w-100"
                             {{ in_array($room->id, $reservations) ? 'disabled' : '' }}>

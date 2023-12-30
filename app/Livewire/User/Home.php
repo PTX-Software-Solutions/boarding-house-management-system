@@ -2,6 +2,7 @@
 
 namespace App\Livewire\User;
 
+use App\Enums\StatusEnums;
 use App\Models\Amenity;
 use App\Models\House;
 use App\Models\RoomType;
@@ -119,7 +120,14 @@ class Home extends Component
                         $query3->whereIn('id', $this->selectedAmenities);
                     });
                 })
+                ->whereHas('getStatus', function ($query4) {
+                    $query4->where('serial_id', StatusEnums::VACANT);
+                })
                 ->where('monthlyDeposit', '<=', $this->priceRange);
+                // ->with(['getStatus' => function ($query4) {
+                //     $query4->where('serial_id', StatusEnums::VACANT);
+                // }]);
+            // ->where('serial_id', StatusEnums::VACANT);
         })
             ->with(['getHousePhoto' => function ($query) {
                 $query->select('houseId', 'imageUrl');
@@ -141,6 +149,8 @@ class Home extends Component
             ->orderBy('created_at', 'desc')
             ->get();
 
+            // dd($houses);
+
         $customLocations = [];
 
         foreach ($houses as $house) {
@@ -151,7 +161,7 @@ class Home extends Component
                     array_push($images, asset('storage/images/' . $photo->imageUrl));
                 }
             }
-    
+
             $selectedAmenityLink = '';
 
             foreach ($this->selectedAmenities as $key => $amenity) {

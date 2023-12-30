@@ -14,7 +14,7 @@ class Transaction extends Component
     public $selectedToggleReservation;
     public $rating = 0;
 
-    
+
     public function rateReservation($data)
     {
         dd($data);

@@ -15,7 +15,7 @@
         </div>
     @endif
 
-    @if ($errors->any())
+    {{-- @if ($errors->any())
         <div class="alert alert-danger">
             <ul>
                 @foreach ($errors->all() as $error)
@@ -23,7 +23,7 @@
                 @endforeach
             </ul>
         </div>
-    @endif
+    @endif --}}
 
     <div class="row">
         <div class="col-lg-7">
@@ -159,6 +159,28 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                {{-- <div class="form-group col-md-12">
+                                    <div class="form-group" wire:ignore>
+                                        <label for="exampleFormControlSelect1">Payment Agreement</label>
+                                        <select wire:model="userId" id="userId" class="form-control test-select"
+                                            data-control="select2" data-placeholder="Select a homeowner">
+                                            <option>-- Select payment agreement --</option>
+                                            @foreach ($paymentAgreements as $paymentAgreement)
+                                                <option value="{{ $paymentAgreement->id }}"
+                                                    @if ($id && $userId === $paymentAgreement->id) {{ 'selected' }} @endif>
+                                                    {{ $paymentAgreement->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div>
+                                        @error('userId')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div> --}}
+
                                 <button type="submit" class="my-3 btn {{ $id ? 'btn-info' : 'btn-primary' }}">
                                     {{ $id ? 'Update' : 'Create' }}
                                 </button>
@@ -391,7 +413,7 @@
                                                 </td>
                                                 <td>
                                                     <a href="#"
-                                                        wire:click="removeAttraction({{ $index }})">
+                                                        wire:click="removeSocialMedia({{ $index }})">
                                                         <i class="fa fa-trash text-danger" aria-hidden="true"></i>
                                                     </a>
                                                 </td>

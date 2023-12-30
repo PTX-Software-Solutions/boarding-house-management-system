@@ -6,6 +6,7 @@ use App\Enums\StatusEnums;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Status;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -42,7 +43,7 @@ class RoomDetails extends Component
     #[Rule('nullable')]
     public $checkOut;
 
-    #[Rule('required')]
+    #[Rule('nullable')]
     public $note;
 
     public function mount($id, $roomId)
@@ -56,15 +57,9 @@ class RoomDetails extends Component
     public function back()
     {
         $linkSelectedAmenity = '';
-        // dd($this->selectedAmenities);
-        // $this->selectedAmenities = !is_null($this->selectedAmenities) ? explode(",", $this->selectedAmenities) : [];
-
         foreach ($this->selectedAmenities as $key => $amenity) {
             $linkSelectedAmenity .= '&selectedAmenities[' . $key . ']=' . $amenity;
         }
-
-
-        // dd($linkSelectedAmenity, $this->selectedAmenities);
 
         return $this->redirect(
             '/boarding-houses/' . $this->houseId .
@@ -81,6 +76,21 @@ class RoomDetails extends Component
     {
 
         $data = $this->validate();
+
+        // Check the check in date
+        if (Carbon::now()->format('Y-m-d') > Carbon::parse($data['checkIn'])->format('Y-m-d')) {
+            $this->addError('checkIn', 'Check in must not be previous days');
+            return;
+        }
+
+        if ($data['checkOut']) {
+            // dd($data['checkOut']);
+            // Check the check out date
+            if (Carbon::parse($data['checkOut'])->format('Y-m-d') < Carbon::parse($data['checkIn'])->format('Y-m-d')) {
+                $this->addError('checkOut', 'Check out must be greater than check in');
+                return;
+            }
+        }
 
         try {
             $statusDefault = Status::where('serial_id', StatusEnums::PENDING)->first();
@@ -106,55 +116,66 @@ class RoomDetails extends Component
     public function render()
     {
 
-        $room = Room::with(['getRoomImages' => function ($query) {
-            $query->select(
-                'roomId',
-                'imageUrl'
-            );
-        }, 'getHouse' => function ($query1) {
-            $query1->select(
-                'id',
-                'userId',
-                'contact'
-            )
-                ->with(['getUser' => function ($query2) {
-                    $query2->select(
-                        'id',
-                        'firstName',
-                        'lastName',
-                        'profileImage'
-                    );
-                }, 'nearbyAttraction' => function ($query3) {
-                    $query3->select(
-                        'houseId',
-                        'name',
-                        'distance',
-                        'distanceTypeId'
-                    )
-                        ->orderBy('order', 'ASC')
-                        ->with(['distanceTypes' => function ($query4) {
-                            $query4->select(
-                                'id',
-                                'name'
-                            );
-                        }]);
-                }, 'getSocialLinks' => function ($query5) {
-                    $query5->select(
-                        'houseId',
-                        'link',
-                        'socialMediaTypeId'
-                    )
-                        ->with(['getSocialMediaType' => function ($query6) {
-                            $query6->select(
-                                'id',
-                                'name',
-                                'serial_id'
-                            );
-                        }]);
-                }]);
-        }, 'amenities'])->findOrFail($this->roomId);
-
-        // dd($room);
+        $room = Room::with([
+            'getRoomImages' => function ($query) {
+                $query->select(
+                    'roomId',
+                    'imageUrl'
+                );
+            }, 'getHouse' => function ($query1) {
+                $query1->select(
+                    'id',
+                    'userId',
+                    'contact'
+                )
+                    ->with(['getUser' => function ($query2) {
+                        $query2->select(
+                            'id',
+                            'firstName',
+                            'lastName',
+                            'profileImage'
+                        );
+                    }, 'nearbyAttraction' => function ($query3) {
+                        $query3->select(
+                            'houseId',
+                            'name',
+                            'distance',
+                            'distanceTypeId'
+                        )
+                            ->orderBy('order', 'ASC')
+                            ->with(['distanceTypes' => function ($query4) {
+                                $query4->select(
+                                    'id',
+                                    'name'
+                                );
+                            }]);
+                    }, 'getSocialLinksInOrder' => function ($query5) {
+                        $query5->select(
+                            'houseId',
+                            'link',
+                            'socialMediaTypeId'
+                        )
+                            ->with(['getSocialMediaType' => function ($query6) {
+                                $query6->select(
+                                    'id',
+                                    'name',
+                                    'serial_id'
+                                );
+                            }]);
+                    }]);
+            }, 'amenities',
+            'getRoomUtilities' => function ($query6) {
+                $query6->select('id', 'roomId', 'roomUtilityType', 'roomUtilityScope', 'price')
+                    ->with(['getRoomUtilityType' => function ($query7) {
+                        $query7->select('id', 'name');
+                    }, 'getRoomUtilityScope' => function ($query8) {
+                        $query8->select('id', 'name');
+                    }])
+                    ->orderBy('order', 'ASC');
+            }, 'getPaymentAgreement' => function ($query7) {
+                $query7->select('id', 'name');
+            }
+        ])->findOrFail($this->roomId);
 
         $statuses = Status::whereIn('serial_id', [StatusEnums::PENDING, StatusEnums::FOR_APPROVAL])->pluck('id')->toArray();
 

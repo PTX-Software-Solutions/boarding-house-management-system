@@ -18,7 +18,10 @@ class DatabaseSeeder extends Seeder
             StatusSeeder::class,
             RoomTypesSeeder::class,
             AmenitiesSeeder::class,
-            SocialMediaSeeder::class
+            SocialMediaSeeder::class,
+            PaymentAgreementTypesSeeder::class,
+            RoomUtilityScopeSeeder::class,
+            RoomUtilityTypeSeeder::class,
         ]);
     }
 }

@@ -20,36 +20,37 @@ use Livewire\Attributes\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class BoardingHouseForm extends Component
 {
     use WithFileUploads;
 
-    #[Rule('required', message: 'The home owner is required')]
+    // #[Rule('required', message: 'The home owner is required')]
     public $userId;
 
-    #[Rule('required')]
+    // #[Rule('required')]
     public $houseName = '';
 
-    #[Rule('required')]
+    // #[Rule('required')]
     public $contact = '';
 
-    #[Rule('required')]
+    // #[Rule('required')]
     public $address = '';
 
-    #[Rule('nullable')]
+    // #[Rule('nullable')]
     public $address2 = '';
 
-    #[Rule('required')]
+    // #[Rule('required')]
     public $city = '';
 
-    #[Rule('required')]
+    // #[Rule('required')]
     public $zip = '';
 
-    #[Rule([
-        'uploadImage'   => 'nullable',
-        'uploadImage.*' => 'nullable|max:1024'
-    ], onUpdate: false)]
+    // #[Rule([
+    //     'uploadImage'   => 'nullable',
+    //     'uploadImage.*' => 'nullable|max:1024'
+    // ], onUpdate: false)]
     public $uploadImage;
 
     public $oldImage = [];
@@ -60,24 +61,19 @@ class BoardingHouseForm extends Component
 
     public $id;
 
-    #[Rule([
-        'attractionLists' => 'required|array',
-        'attractionLists.*.name' => 'required',
-        'attractionLists.*.distance' => 'required',
-        'attractionLists.*.distanceType' => 'required'
-    ], message: [
-        'attractionLists.required' => 'The attraction field is required',
-        'attractionLists.*.name.required' => 'The name field is required',
-        'attractionLists.*.distance.required' => 'The distance field is required',
-        'attractionLists.*.distanceType.required' => 'The distance type field is required'
-    ])]
+    // #[Rule([
+    //     'attractionLists' => 'required|array',
+    //     'attractionLists.*.name' => 'required',
+    //     'attractionLists.*.distance' => 'required',
+    //     'attractionLists.*.distanceType' => 'required'
+    // ], message: [
+    //     'attractionLists.required' => 'The attraction field is required',
+    //     'attractionLists.*.name.required' => 'The name field is required',
+    //     'attractionLists.*.distance.required' => 'The distance field is required',
+    //     'attractionLists.*.distanceType.required' => 'The distance type field is required'
+    // ])]
     public $attractionLists = [];
 
-    #[Rule([
-        'socialLinks' => 'nullable|array',
-        'socialLinks.*.link' => 'nullable',
-        'socialLinks.*.socialType' => 'nullable',
-    ])]
     public $socialLinks = [];
 
     public $currentTab = 1;
@@ -85,6 +81,48 @@ class BoardingHouseForm extends Component
     protected $listeners = [
         'resetInputFields' => 'resetInput'
     ];
+
+    public function rules()
+    {
+        return [
+            'userId' => 'required',
+            'houseName' => 'required',
+            'contact' => 'required',
+            'address' => 'required',
+            'address2' => 'nullable',
+            'city' => 'required',
+            'zip' => 'required',
+            'uploadImage'   => 'nullable',
+            'uploadImage.*' => 'nullable|max:1024',
+            'attractionLists' => 'required|array',
+            'attractionLists.*.name' => 'required',
+            'attractionLists.*.distance' => 'required',
+            'attractionLists.*.distanceType' => 'required',
+            'socialLinks' => 'nullable|array',
+            // 'socialLinks.*.link' => 'nullable',
+            'socialLinks.*.link' => ValidationRule::requiredIf(function () {
+                // The link is required only if a social media account is provided
+                return !empty($this->socialLinks) && is_array($this->socialLinks);
+            }),
+            'socialLinks.*.socialType' => ValidationRule::requiredIf(function () {
+                // The link is required only if a social media account is provided
+                return !empty($this->socialLinks) && is_array($this->socialLinks);
+            }),
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'userId.required' => 'The home owner is required',
+            'attractionLists.required' => 'The attraction field is required',
+            'attractionLists.*.name.required' => 'The name field is required',
+            'attractionLists.*.distance.required' => 'The distance field is required',
+            'attractionLists.*.distanceType.required' => 'The distance type field is required',
+            'socialLinks.*.link.required' => 'The social media link is required',
+            'socialLinks.*.socialType' => 'The social media type is required'
+        ];
+    }
 
     public function back()
     {
@@ -111,6 +149,11 @@ class BoardingHouseForm extends Component
             'link'  => null,
             'socialType' => null
         ];
+    }
+
+    public function removeSocialMedia($index)
+    {
+        unset($this->socialLinks[$index]);
     }
 
     public function removeAttraction($index)
@@ -254,7 +297,7 @@ class BoardingHouseForm extends Component
                 }
 
                 // Remove all existing social links and insert new data
-                if (!$bh->getSocialLinks->isEmpty()) {
+                if (!empty($data['socialLinks'])) {
                     foreach ($bh->getSocialLinks as $socialLink) {
                         $socialLink->delete();
                     }
@@ -383,7 +426,7 @@ class BoardingHouseForm extends Component
         return view('livewire.admin.boarding-house-form', [
             'homeOwners'        => $homeOwners,
             'distanceTypes'     => $distanceTypes,
-            'socialMediaTypes'  => $socialMediaTypes
+            'socialMediaTypes'  => $socialMediaTypes,
         ]);
     }
 }

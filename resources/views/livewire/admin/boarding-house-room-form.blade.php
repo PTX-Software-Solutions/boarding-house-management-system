@@ -14,6 +14,16 @@
         </div>
     @endif
 
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <div class="row">
         <div class="col-lg-5">
             <div class="card shadow mb-4">
@@ -43,7 +53,6 @@
                                         <div x-show="uploading">
                                             <progress max="100" x-bind:value="progress"></progress>
                                         </div>
-                                        {{-- @dd('zxczxc', $oldImage) --}}
                                         <div>
                                             @if ($oldImage)
                                                 <div class="d-flex flex-wrap">
@@ -101,10 +110,15 @@
                         wire:click="changeTab(2)" href="#profile" role="tab" aria-controls="profile"
                         aria-selected="false">Room Ammenities</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link {{ $currentTab === 3 ? 'active' : '' }}" id="profile-tab" data-toggle="tab"
+                        wire:click="changeTab(3)" href="#profile" role="tab" aria-controls="profile"
+                        aria-selected="false">Room Utilities</a>
+                </li>
             </ul>
             <form wire:submit="save" autocomplete="off">
                 <div class="tab-content" id="myTabContent">
-                    {{-- House Info --}}
+                    {{-- Room Info --}}
                     <div class="tab-pane fade {{ $currentTab === 1 ? 'show active' : '' }}" id="home"
                         role="tabpanel" aria-labelledby="home-tab">
                         <div class="card shadow mb-4">
@@ -144,6 +158,23 @@
                                     </select>
                                     <div>
                                         @error('roomType')
+                                            <p class="text-danger">{{ $message }}</p>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="paymentAgreementType">Payment Agreement</label>
+                                    <select class="form-control" wire:model="paymentAgreementType"
+                                        id="exampleFormControlSelect1">
+                                        <option>-- Select type --</option>
+                                        @foreach ($paymentAgreements as $paymentAgreement)
+                                            <option value="{{ $paymentAgreement->id }}">
+                                                {{ $paymentAgreement->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div>
+                                        @error('paymentAgreementType')
                                             <p class="text-danger">{{ $message }}</p>
                                         @enderror
                                     </div>
@@ -218,6 +249,106 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Social Media --}}
+                    <div class="tab-pane fade {{ $currentTab === 3 ? 'show active' : '' }}" id="profile"
+                        role="tabpanel" aria-labelledby="profile-tab">
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-end align-items-center">
+                                    <button type="button" wire:click="addUtilities" class="btn btn-primary my-3">
+                                        <i class="fas fa-plus-circle"></i>
+                                        Add</button>
+                                </div>
+
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Utility Type</th>
+                                            <th scope="col">Scope</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">Remove</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @forelse ($roomUtilities as $index => $roomUtility)
+                                            <tr>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <select class="form-control"
+                                                            wire:model.live="roomUtilities.{{ $index }}.utilityType"
+                                                            id="exampleFormControlSelect1">
+                                                            <option>-- Select utility type --</option>
+                                                            @foreach ($roomUtilitiesTypes as $roomUtilitiesType)
+                                                                <option value="{{ $roomUtilitiesType->id }}"
+                                                                    {{ in_array($roomUtilitiesType->id, $selectedUtilities) ? 'disabled' : '' }}>
+                                                                    {{ $roomUtilitiesType->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <small>
+                                                        @error("roomUtilities.{$index}.utilityType")
+                                                            <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </small>
+                                                </td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <select class="form-control"
+                                                            wire:model.live="roomUtilities.{{ $index }}.scope"
+                                                            id="exampleFormControlSelect1">
+                                                            <option>-- Select type --</option>
+                                                            @foreach ($roomUtilitiesScopes as $roomUtilitiesScope)
+                                                                <option value="{{ $roomUtilitiesScope->id }}">
+                                                                    {{ $roomUtilitiesScope->name }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                    <small>
+                                                        @error("roomUtilities.{$index}.scope")
+                                                            <p class="text-danger">{{ $message }}</p>
+                                                        @enderror
+                                                    </small>
+                                                </td>
+                                                @if ($roomUtilities[$index]['scopeSerialId'] === 2)
+                                                    <th scope="row">
+                                                        <div class="form-group">
+                                                            <input type="number"
+                                                                wire:model.live="roomUtilities.{{ $index }}.price"
+                                                                class="form-control" aria-describedby="emailHelp"
+                                                                placeholder="...">
+                                                        </div>
+                                                        <small>
+                                                            @error("roomUtilities.{$index}.price")
+                                                                <p class="text-danger">{{ $message }}</p>
+                                                            @enderror
+                                                        </small>
+                                                    </th>
+                                                @else
+                                                    <th colspan="1">
+
+                                                    </th>
+                                                @endif
+                                                <td>
+                                                    <a href="#"
+                                                        wire:click="removeRoomUtility({{ $index }})">
+                                                        <i class="fa fa-trash text-danger" aria-hidden="true"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        @empty
+                                            <tr>
+                                                <td class="text-center" colspan="4">No data!</td>
+                                            </tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </form>
         </div>

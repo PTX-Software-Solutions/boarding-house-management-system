@@ -11,6 +11,7 @@
                 <th scope="col">Room</th>
                 <th scope="col">Check In</th>
                 <th scope="col">Check Out</th>
+                <th scope="col">Status</th>
                 <th scope="col" class="text-center">Action</th>
             </tr>
         </thead>
@@ -21,6 +22,12 @@
                     <td><span class="badge badge-primary">{{ $reservation->getRoom->name }}</span></td>
                     <td>{{ \Carbon\Carbon::parse($reservation->checkIn)->format('Y-m-d') }}</td>
                     <td>{{ $reservation->checkOut ? \Carbon\Carbon::parse($reservation->checkOut)->format('Y-m-d') : '-' }}
+                    </td>
+                    <td>
+                        <span
+                            class="badge {{ $reservation->getStatus->serial_id === 1 ? 'badge-info' : 'badge-warning' }}">
+                            {{ $reservation->getStatus->name }}
+                        </span>
                     </td>
                     <td class="text-center">
                         <button wire:click="cancelReservation('{{ $reservation->id }}')"

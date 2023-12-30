@@ -33,7 +33,7 @@ class Reservation extends Component
     {
         $reservations = ModelsReservation::with('getUser', 'getHouse', 'getRoom', 'getStatus')
             ->whereHas('getStatus', function ($query) {
-                $query->where('serial_id', StatusEnums::PENDING);
+                $query->whereIn('serial_id', [StatusEnums::PENDING, StatusEnums::FOR_APPROVAL]);
             })
             ->orderBy('created_at', 'DESC')
             ->where('userId', Auth::id())

@@ -60,6 +60,12 @@ class AmenitiesSeeder extends Seeder
             ],
             [
                 'name' => 'Gym/fitness facilities'
+            ],
+            [
+                'name' => 'Guest allowed'
+            ],
+            [
+                'name' => 'Baby allowed'
             ]
         ];
 

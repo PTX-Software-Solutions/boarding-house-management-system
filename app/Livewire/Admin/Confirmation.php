@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Enums\StatusEnums;
 use App\Models\Reservation;
+use App\Models\Room;
 use App\Models\Status;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
@@ -35,10 +36,19 @@ class Confirmation extends Component
     #[On('approveReserv')]
     public function approveReservFunc($id)
     {
-        $status = Status::where('serial_id', StatusEnums::APPROVED)->first();
+        $statusApproved = Status::where('serial_id', StatusEnums::APPROVED)->first();
+        $statusOccupied = Status::where('serial_id', StatusEnums::OCCUPIED)->first();
 
         Reservation::where('id', $id)->update([
-            'statusId' => $status->id
+            'statusId' => $statusApproved->id
+        ]);
+
+        // Update the room status
+        $reservation = Reservation::where('id', $id)->first();
+        $room = Room::findOrFail($reservation->roomId);
+
+        $room->update([
+            'statusId' => $statusOccupied->id
         ]);
     }
 

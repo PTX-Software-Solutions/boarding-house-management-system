@@ -45,7 +45,7 @@
                                             <div class="mx-1">
                                                 <i class="fa fa-comment" aria-hidden="true"></i>
                                             </div>
-                                            <span class="description">Reviews</span>
+                                            <span class="description">Reviews by tenants</span>
                                         </div>
                                     </div>
                                 </div>
@@ -168,10 +168,11 @@
 
                     <div class="container">
                         <div class="row d-flex">
-                            @foreach ($rooms as $room)
+                            @foreach ($rooms as $key => $room)
                                 <div class="col-sm-12 col-md-12 col-lg-12 col-xl-6 my-2">
                                     <div class="card" style="width: 16rem;">
-                                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                        <div id="{{ 'carouselExampleControls' . $key }}" class="carousel slide"
+                                            data-ride="carousel">
                                             <div class="carousel-inner" style="max-height:150px">
                                                 @foreach ($room?->getRoomImages as $index => $image)
                                                     <div class="carousel-item {{ $index === 0 ? 'active' : '' }}"
@@ -184,12 +185,14 @@
                                                 @endforeach
                                             </div>
                                             <button class="carousel-control-prev" type="button"
-                                                data-target="#carouselExampleControls" data-slide="prev">
+                                                data-target="{{ '#carouselExampleControls' . $key }}"
+                                                data-slide="prev">
                                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                                                 <span class="sr-only">Previous</span>
                                             </button>
                                             <button class="carousel-control-next" type="button"
-                                                data-target="#carouselExampleControls" data-slide="next">
+                                                data-target="{{ '#carouselExampleControls' . $key }}"
+                                                data-slide="next">
                                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                                                 <span class="sr-only">Next</span>
                                             </button>
@@ -208,8 +211,9 @@
                                                         {{ $amenity->name }}
 
                                                         @if (in_array($amenity->id, $selectedAmenities))
-                                                            <span style="position: absolute; top:-40%; right:-6%;" class="text-danger"><i
-                                                                    class="fa fa-star" aria-hidden="true"></i></span>
+                                                            <span style="position: absolute; top:-40%; right:-6%;"
+                                                                class="text-danger"><i class="fa fa-star"
+                                                                    aria-hidden="true"></i></span>
                                                         @endif
                                                     </span>
                                                 @endforeach

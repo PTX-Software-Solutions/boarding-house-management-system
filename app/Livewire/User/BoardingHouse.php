@@ -2,6 +2,7 @@
 
 namespace App\Livewire\User;
 
+use App\Enums\StatusEnums;
 use App\Models\House;
 use App\Models\Room;
 use Livewire\Attributes\Layout;
@@ -65,7 +66,8 @@ class BoardingHouse extends Component
             'name',
             'monthlyDeposit',
             'houseId',
-            'roomTypeId'
+            'roomTypeId',
+            'statusId'
         )
             ->with([
                 'getRoomType' => function ($query) {
@@ -92,6 +94,9 @@ class BoardingHouse extends Component
                     });
                 }
             ])
+            ->whereHas('getStatus', function ($query9) {
+                $query9->where('serial_id', StatusEnums::VACANT);
+            })
             ->where('houseId', $this->id)
             ->when($this->roomType, function ($query6) {
                 $query6->where('roomTypeId', '=', $this->roomType);
@@ -111,3 +116,6 @@ class BoardingHouse extends Component
         ]);
     }
 }
+// ->whereHas('getStatus', function ($query4) {
+//     $query4->where('serial_id', StatusEnums::VACANT);
+// })
