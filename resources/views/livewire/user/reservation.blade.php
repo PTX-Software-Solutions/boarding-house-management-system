@@ -2,7 +2,7 @@
 
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800">{{ __('Reservations') }}</h1>
-    <span class="text-danger">Automatically cancelled already passed check-in dates</span>
+    <span class="text-danger">Automatically cancel already passed check-in dates</span>
 
     <table class="table">
         <thead class="thead-light">
