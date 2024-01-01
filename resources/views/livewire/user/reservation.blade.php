@@ -54,7 +54,9 @@
 
 <script data-navigate-track>
     function houseTableEvents() {
+        console.log('BBBB')
         Livewire.on('success-reservation', (event) => {
+            console.log('AAAA11')
             setTimeout(() => {
                 Swal.fire({
                     position: 'top-end',
@@ -100,3 +102,21 @@
         document.removeEventListener('livewire:navigated', listener)
     })
 </script>
+
+{{-- <script>
+    document.addEventListener('livewire:navigated', function() {
+        @this.on('success-reservation', (event) => {
+            console.log('AAAA22')
+            setTimeout(() => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'BH reservation successfully created!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, 1000)
+        })
+    })
+</script> --}}

@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use App\Enums\StatusEnums;
+use App\Livewire\User\Reservation as UserReservation;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Status;
@@ -105,11 +106,12 @@ class RoomDetails extends Component
             ]);
 
 
-            $this->dispatch('success-reservation');
-            return $this->redirect('/reservations', navigate: true);
+            $this->dispatch('success-reservation')->to(UserReservation::class);
         } catch (Exception $e) {
             Log::debug($e);
         }
+
+        return $this->redirect('/reservations', navigate: true);
     }
 
     #[Layout('components.layouts.userAuth')]

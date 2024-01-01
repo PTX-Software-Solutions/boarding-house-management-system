@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -36,6 +37,10 @@ class Reservation extends Model
 
     public function getStatus(): HasOne {
         return $this->hasOne(Status::class, 'id', 'statusId');
+    }
+
+    public function getRating(): BelongsTo {
+        return $this->belongsTo(Rating::class, 'id', 'reservationId');
     }
 
 }

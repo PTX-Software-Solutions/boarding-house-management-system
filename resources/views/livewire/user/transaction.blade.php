@@ -28,7 +28,18 @@
                         </span>
                     </td>
                     <td class="text-center">
-                        @if ($reservation->getStatus->serial_id === 2)
+                        @if ($reservation->getRating)
+                            @for ($i = 1; $i <= 5; $i++)
+                                @if ($i <= $reservation->getRating->rating)
+                                    {{-- <span wire:click.prevent="rateReservation({{ json_encode($data) }})"
+                                @if ($rating >= $i) class="text-warning" @endif
+                                style="cursor:pointer; font-size: 18px;">&#9733;</span> --}}
+                                    <i class="fa fa-star text-primary" aria-hidden="true"></i>
+                                @else
+                                    <i class="fa fa-star" aria-hidden="true"></i>
+                                @endif
+                            @endfor
+                        @elseif ($reservation->getStatus->serial_id === 2)
                             @if (!$isRatingClicked || $selectedToggleReservation !== $reservation->id)
                                 <button wire:click="toggleReservation({{ json_encode($reservation->id) }})"
                                     class="btn btn-primary delete-header m-1 btn-sm text-white" title="Edit"
@@ -43,6 +54,7 @@
                                             $data = [
                                                 'rate' => $i,
                                                 'reservationId' => $reservation->id,
+                                                'houseId' => $reservation->getHouse->id,
                                             ];
                                         @endphp
                                         <span wire:click.prevent="rateReservation({{ json_encode($data) }})"

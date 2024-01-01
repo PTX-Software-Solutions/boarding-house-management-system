@@ -16,3 +16,10 @@ use Illuminate\Support\Facades\Broadcast;
 Broadcast::channel('App.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
+
+Broadcast::channel('review.{houseId}', function($user, $houseId) {
+
+    // Check if the user is same as receiever
+    // return (int) $user->id === (int) $houseId;
+    return true;
+});

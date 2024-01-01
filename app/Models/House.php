@@ -66,4 +66,9 @@ class House extends Model
     {
         return $this->hasMany(SocialMedia::class, 'houseId', 'id');
     }
+
+    public function getRatings()
+    {
+        return $this->hasMany(Rating::class, 'houseId', 'id');
+    }
 }
