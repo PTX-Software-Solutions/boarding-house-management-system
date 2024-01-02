@@ -48,7 +48,7 @@
                 </a>
 
                 <div id="contentsss" class="dropdown-menu dropdown-menu-right shadow">
-                    <a class="dropdown-item" href="#">
+                    <a class="dropdown-item" href="#" wire:click="profile">
                         <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
                         {{ __('Profile') }}
                     </a>

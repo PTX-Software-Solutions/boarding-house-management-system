@@ -19,8 +19,8 @@ class Dashboard extends Component
             'users' => $users
         ];
 
-        $columnChartModel = (new ColumnChartModel())
-            ->setTitle('Income Chart')
+        $reservationRooms = (new ColumnChartModel())
+            ->setTitle('Number of Reservation Rooms')
             ->addColumn('January', 100, '#f6ad55')
             ->addColumn('February', 200, '#fc8181')
             ->addColumn('March', 52, '#125df4')
@@ -48,7 +48,7 @@ class Dashboard extends Component
 
         return view('livewire.admin.dashboard', [
             'widget' => $widget,
-            'columnChartModel' => $columnChartModel,
+            'reservationRooms' => $reservationRooms,
             // 'lineChartModel' => $lineChartModel
         ]);
     }

@@ -19,6 +19,7 @@ use App\Livewire\Houses\HousesTable;
 use App\Livewire\Management\Dashboard;
 use App\Livewire\User\BoardingHouse;
 use App\Livewire\User\Home;
+use App\Livewire\User\Profile;
 use App\Livewire\User\Reservation;
 use App\Livewire\User\RoomDetails;
 use App\Livewire\User\Transaction;
@@ -124,4 +125,6 @@ Route::group([
     Route::get('/boarding-house', HousesTable::class)->name('boarding.house');
     Route::get('/boarding-house/create', HousesForm::class)->name('boarding.house.form.create');
     Route::get('boarding-house/edit/{id}', HousesForm::class)->name('boarding.house.form.edit');
+
+    Route::get('/profile', Profile::class)->name('user.profile');
 });

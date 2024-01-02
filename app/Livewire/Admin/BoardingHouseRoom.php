@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class BoardingHouseRoom extends Component
@@ -32,6 +33,18 @@ class BoardingHouseRoom extends Component
         return $this->redirect('/admin/boarding-houses/' . $this->id . '/rooms/edit/' . $roomId, navigate: true);
     }
 
+    #[On('removeBHRoom')]
+    public function deleteActionRoom($id)
+    {
+        Room::where('id', $id)->delete();
+    }
+
+
+    public function deleteRoom($roomId)
+    {
+        $this->dispatch('deleteBHRoom', id: $roomId);
+    }
+
     #[Layout('components.layouts.adminAuth')]
     public function render()
     {
@@ -52,6 +65,7 @@ class BoardingHouseRoom extends Component
             ->groupBy('r.id')
             ->orderBy('created_at', 'DESC')
             ->where('houseId', $this->id)
+            ->whereNull('r.deleted_at')
             ->paginate(10);
 
         return view('livewire.admin.boarding-house-room', [

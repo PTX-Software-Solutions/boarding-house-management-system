@@ -28,19 +28,19 @@ class Reservation extends Model
     }
 
     public function getHouse(): HasOne {
-        return $this->hasOne(House::class, 'id', 'houseId');
+        return $this->hasOne(House::class, 'id', 'houseId')->withTrashed();
     }
 
     public function getRoom(): HasOne {
-        return $this->hasOne(Room::class, 'id', 'roomId');
+        return $this->hasOne(Room::class, 'id', 'roomId')->withTrashed();
     }
 
     public function getStatus(): HasOne {
-        return $this->hasOne(Status::class, 'id', 'statusId');
+        return $this->hasOne(Status::class, 'id', 'statusId')->withTrashed();
     }
 
     public function getRating(): BelongsTo {
-        return $this->belongsTo(Rating::class, 'id', 'reservationId');
+        return $this->belongsTo(Rating::class, 'id', 'reservationId')->withTrashed();
     }
 
 }

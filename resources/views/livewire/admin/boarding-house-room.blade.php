@@ -96,7 +96,7 @@
             }, 1000)
         })
 
-        Livewire.on('deleteBH', (event) => {
+        Livewire.on('deleteBHRoom', (event) => {
             Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -107,7 +107,7 @@
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    @this.dispatch("removeBH", {
+                    @this.dispatch("removeBHRoom", {
                         id: event.id
                     })
                     Swal.fire(

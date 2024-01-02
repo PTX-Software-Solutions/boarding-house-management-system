@@ -8,9 +8,13 @@ use App\Models\Reservation;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 class Transaction extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+
     public $isRatingClicked = false;
     public $selectedToggleReservation;
     public $rating = 0;
@@ -37,7 +41,8 @@ class Transaction extends Component
     #[Layout('components.layouts.userAuth')]
     public function render()
     {
-        $reservations = Reservation::with('getUser', 'getHouse', 'getRoom', 'getStatus', 'getRating')
+        $reservations = Reservation::withTrashed()
+            ->with('getUser', 'getHouse', 'getRoom', 'getStatus', 'getRating')
             ->whereHas('getStatus', function ($query) {
                 $query->whereIn('serial_id', [StatusEnums::CANCELLED, StatusEnums::APPROVED]);
             })
