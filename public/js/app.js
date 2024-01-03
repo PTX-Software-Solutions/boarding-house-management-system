@@ -25992,6 +25992,8 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__["default"]({
   broadcaster: 'pusher',
   key: "be77ccae598e11ed58b1",
   cluster: "ap1",
+  // key: process.env.VITE_PUSHER_APP_KEY,
+  // cluster: process.env.VITE_PUSHER_APP_CLUSTER,
   forceTLS: true
 });
 

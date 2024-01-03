@@ -275,11 +275,11 @@
     function listener() {
         loadMoreMessages()
 
-        window.onscroll = function(ev) {
-            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-                window.livewire.emit('load-more');
-            }
-        };
+        // window.onscroll = function(ev) {
+        //     if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+        //         window.livewire.emit('load-more');
+        //     }
+        // };
 
         $('#userId').on('select2:select', function(e) {
             let value = $(this).val();

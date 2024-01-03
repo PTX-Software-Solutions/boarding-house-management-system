@@ -1,6 +1,10 @@
 <div>
+
+    {{-- <button wire:click="back" class="btn btn-sm btn-primary mb-3"><i class="fa fa-chevron-left" aria-hidden="true"></i>
+        Back</button> --}}
+
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Profile') }}</h1>
+    <h1 class="h3 mb-4 text-gray-800">{{ __('My Account') }}</h1>
 
     @if (session('success'))
         <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
@@ -12,8 +16,8 @@
     @endif
 
     @if ($errors->any())
-        <div class="alert alert-danger border-left-danger" role="alert">
-            <ul class="pl-4 my-2">
+        <div class="alert alert-danger">
+            <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -22,169 +26,181 @@
     @endif
 
     <div class="row">
-
-        <div class="col-lg-4 order-lg-2">
-
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
-                <div class="card-profile-image mt-4">
-                    <figure class="rounded-circle avatar avatar font-weight-bold"
-                        style="font-size: 60px; height: 180px; width: 180px;"
-                        data-initial="{{ Auth::user()->firstName }}"></figure>
-                </div>
-                <div class="card-body">
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="text-center">
-                                <h5 class="font-weight-bold">{{ Auth::user()->fullName }}</h5>
-                                <p>Administrator</p>
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                Information
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">22</span>
-                                <span class="description">Friends</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">10</span>
-                                <span class="description">Photos</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card-profile-stats">
-                                <span class="heading">89</span>
-                                <span class="description">Comments</span>
+                            <div class="card-body">
+                                <div class="card-body">
+                                    <form wire:submit="save">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="firstName">First Name</label>
+                                                <input type="text" wire:model="firstName" class="form-control"
+                                                    id="firstName">
+                                                <div>
+                                                    @error('firstName')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="lastName">Last Name</label>
+                                                <input type="text" wire:model="lastName" class="form-control"
+                                                    id="lastName">
+                                                <div>
+                                                    @error('lastName')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="email">Email Address</label>
+                                            <input type="text" wire:model="email" class="form-control" id="email"
+                                                autocomplete="off">
+                                            <div>
+                                                @error('email')
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="profileImage" wire:click="$refs.profileImage.click()"
+                                                for="profileImage">
+                                                <i class="fa fa-cloud-upload" aria-hidden="true"></i>
+                                                Upload Image
+                                            </label>
+                                            <input type="file" wire:model="profileImage" class="form-control"
+                                                id="profileImage" style="visibility: hidden;">
+                                            @if ($oldImage)
+                                                <div class="d-flex flex-wrap">
+                                                    <div style="width: 100px; height: 100px; position: relative;"
+                                                        class="mx-1">
+                                                        <img src="{{ Storage::url('public/images/' . $oldImage) }}"
+                                                            class="img-thumbnail rounded"
+                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                            alt="">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            @if ($profileImage)
+                                                <span>These will be the new image</span>
+                                                <div class="d-flex flex-wrap">
+                                                    <div style="width: 100px; height: 100px; position: relative;"
+                                                        class="mx-1">
+                                                        <img src="{{ $profileImage->temporaryUrl() }}"
+                                                            class="img-thumbnail rounded"
+                                                            style="width: 100%; height: 100%; object-fit: contain;"
+                                                            alt="">
+                                                    </div>
+                                                </div>
+                                            @endif
+                                            <div>
+                                                @error('profileImage')
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="my-3 btn btn-info">
+                                            {{ 'Update Information' }}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
 
-        <div class="col-lg-8 order-lg-1">
+        <div class="col-lg-12">
             <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">My Account</h6>
-                </div>
-                <div class="card-body">
-                    <form method="POST" autocomplete="off">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <div class="form-row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <i class="fa fa-user-plus" aria-hidden="true"></i>
+                                Password
+                            </div>
+                            <div class="card-body">
+                                <div class="card-body">
 
-                        <input type="hidden" name="_method" value="PUT">
-
-                        <h6 class="heading-small text-muted mb-4">User information</h6>
-
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="name">First Name<span
-                                                class="small text-danger">*</span></label>
-                                        <input type="text" id="name" class="form-control" name="name"
-                                            placeholder="Name" value="{{ old('name', Auth::user()->name) }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="last_name">Last name</label>
-                                        <input type="text" id="last_name" class="form-control" name="last_name"
-                                            placeholder="Last name"
-                                            value="{{ old('last_name', Auth::user()->last_name) }}">
-                                    </div>
+                                    <form wire:submit="updatePassword">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="currentPassword">Current Password</label>
+                                            <input type="password" wire:model="currentPassword" class="form-control"
+                                                id="currentPassword" autocomplete="off">
+                                            <div>
+                                                @error('currentPassword')
+                                                    <p class="text-danger">{{ $message }}</p>
+                                                @enderror
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="password">New Password</label>
+                                                <input type="password" wire:model="password" class="form-control"
+                                                    id="password">
+                                                <div>
+                                                    @error('password')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="password_confirmation">Confirm Password</label>
+                                                <input type="password" wire:model="password_confirmation"
+                                                    class="form-control" id="password_confirmation">
+                                                <div>
+                                                    @error('password_confirmation')
+                                                        <p class="text-danger">{{ $message }}</p>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="my-3 btn btn-info">
+                                            Update Password
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="email">Email address<span
-                                                class="small text-danger">*</span></label>
-                                        <input type="email" id="email" class="form-control" name="email"
-                                            placeholder="example@example.com"
-                                            value="{{ old('email', Auth::user()->email) }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Button -->
-                            <div class="pl-lg-4">
-                                <div class="row">
-                                    <div class="col text-center">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">My Account</h6>
-                </div>
-                <div class="card-body">
-                    <form method="POST" autocomplete="off">
-                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
-
-                        <input type="hidden" name="_method" value="PUT">
-
-                        <h6 class="heading-small text-muted mb-4">User information</h6>
-
-                        <div class="pl-lg-4">
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="name">First Name<span
-                                                class="small text-danger">*</span></label>
-                                        <input type="text" id="name" class="form-control" name="name"
-                                            placeholder="Name" value="{{ old('name', Auth::user()->name) }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group focused">
-                                        <label class="form-control-label" for="last_name">Last name</label>
-                                        <input type="text" id="last_name" class="form-control" name="last_name"
-                                            placeholder="Last name"
-                                            value="{{ old('last_name', Auth::user()->last_name) }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group">
-                                        <label class="form-control-label" for="email">Email address<span
-                                                class="small text-danger">*</span></label>
-                                        <input type="email" id="email" class="form-control" name="email"
-                                            placeholder="example@example.com"
-                                            value="{{ old('email', Auth::user()->email) }}">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Button -->
-                            <div class="pl-lg-4">
-                                <div class="row">
-                                    <div class="col text-center">
-                                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    </div>
-                                </div>
-                            </div>
-                    </form>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
+<script data-navigate-track>
+    function houseTableEvents() {
+        Livewire.on('success-update', (event) => {
+            setTimeout(() => {
+                Swal.fire({
+                    position: 'top-end',
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Updated data successfully!',
+                    showConfirmButton: false,
+                    timer: 1500
+                });
+            }, 1000)
+        })
+    }
+
+    function listener() {
+        houseTableEvents()
+    }
+
+    document.addEventListener('livewire:navigated', listener)
+    document.addEventListener('livewire:navigating', () => {
+        document.removeEventListener('livewire:navigated', listener)
+    })
+</script>

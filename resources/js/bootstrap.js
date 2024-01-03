@@ -22,7 +22,9 @@ window.Pusher = require('pusher-js');
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: process.env.VITE_PUSHER_APP_KEY,
-    cluster: process.env.VITE_PUSHER_APP_CLUSTER,
+    key: "be77ccae598e11ed58b1",
+    cluster: "ap1",
+    // key: process.env.VITE_PUSHER_APP_KEY,
+    // cluster: process.env.VITE_PUSHER_APP_CLUSTER,
     forceTLS: true
 });
