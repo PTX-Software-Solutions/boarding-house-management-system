@@ -12,6 +12,17 @@
         </button>
     </div>
 
+    <div>
+        <button wire:click="exportExcelBoardingHouse" class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
+            Export to excel
+        </button>
+        <a href="{{ route('admin.export.pdf.bh') }}">
+            <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
+                Export to pdf
+            </button>
+        </a>
+    </div>
+
     <table class="table">
         <thead class="thead-light">
             <tr>
@@ -27,7 +38,7 @@
                 <tr wire:key="{{ $boardingHouse->id }}">
                     <th scope="row">{{ $boardingHouse->houseName }}</th>
                     <td>{{ $boardingHouse->address }}</td>
-                    <td>10 / 20</td>
+                    <td>{{ $boardingHouse->vacant_rooms }} / {{ $boardingHouse->occupied_rooms }}</td>
                     <td>{{ $boardingHouse->contact }}</td>
                     <td>
                         <button wire:click="rooms('{{ $boardingHouse->id }}')"

@@ -29,17 +29,17 @@
         <tbody>
             @forelse ($rooms as $room)
                 <tr wire:key="{{ $room->id }}">
-                    <th scope="row">{{ $room->roomName }}</th>
+                    <th scope="row">{{ $room->name }}</th>
                     <td>{{ $room->monthlyDeposit }}</td>
-                    <td>{{ $room->roomTypeName }}</td>
+                    <td>{{ $room->getRoomType->name }}</td>
                     <td>
-                        @if ($room->amenityNames)
-                            @foreach (explode(',', $room->amenityNames) as $data)
-                                <span class="badge badge-primary">{{ $data }}</span>
+                        @if ($room->amenities->isNotEmpty())
+                            @foreach ($room->amenities as $data)
+                                <span class="badge badge-primary">{{ $data->name }}</span>
                             @endforeach
                         @endif
                     </td>
-                    <td>{{ $room->statusName }}</td>
+                    <td>{{ $room->getStatus->name }}</td>
                     <td>
                         <button wire:click="editRoom('{{ $room->id }}')"
                             class="btn btn-info delete-header m-1 btn-sm text-white" title="Edit" data-toggle="modal"

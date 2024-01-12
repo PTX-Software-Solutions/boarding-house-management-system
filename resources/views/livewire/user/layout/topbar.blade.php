@@ -42,6 +42,8 @@
                     <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{ Auth::user()->firstName }}</span>
                     <div class="img-profile rounded-circle avatar font-weight-bold" data-initial="">
                         <img src="{{ asset('storage/images/' . Auth::user()->profileImage) }}" alt="">
+                        {{-- <img src="{{ asset('storage/images/public/images/' . Auth::user()->profileImage) }}" alt=""> --}}
+                        {{-- <img src="{{ url('storage/images/public/images/' . Auth::user()->profileImage) }}" alt=""> --}}
                         {{-- <img src="{{ Storage::disk('s3')->url('photos/client/' . Auth::user()->profileImage) }}"
                             alt="Profile Image"> --}}
                     </div>

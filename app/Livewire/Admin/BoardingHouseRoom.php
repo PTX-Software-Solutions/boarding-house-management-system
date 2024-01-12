@@ -48,24 +48,16 @@ class BoardingHouseRoom extends Component
     #[Layout('components.layouts.adminAuth')]
     public function render()
     {
-        $rooms = DB::table('rooms AS r')
-            ->select(
-                'r.id',
-                'r.name AS roomName',
-                'r.monthlyDeposit',
-                'rt.name AS roomTypeName',
-                DB::raw('GROUP_CONCAT(a.name) AS amenityNames'),
-                's.name AS statusName',
-                'r.created_at'
-            )
-            ->leftJoin('room_types AS rt', 'r.roomTypeId', '=', 'rt.id')
-            ->leftJoin('room_amenities AS ra', 'r.id', '=', 'ra.roomId')
-            ->leftJoin('amenities AS a', 'ra.amenityId', '=', 'a.id')
-            ->leftJoin('statuses AS s', 'r.statusId', '=', 's.id')
-            ->groupBy('r.id')
-            ->orderBy('created_at', 'DESC')
-            ->where('houseId', $this->id)
-            ->whereNull('r.deleted_at')
+        $rooms = Room::with([
+            'getRoomType' => function ($query1) {
+                $query1->select('id', 'serial_id', 'name');
+            }
+            , 'amenities',
+            'getStatus' => function ($query2) {
+                $query2->select('id', 'serial_id', 'name');
+            }
+        ])->where('houseId', $this->id)
+            ->latest()
             ->paginate(10);
 
         return view('livewire.admin.boarding-house-room', [

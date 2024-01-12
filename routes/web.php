@@ -6,6 +6,8 @@ use App\Livewire\Admin\BoardingHouseRoom;
 use App\Livewire\Admin\BoardingHouseRoomForm;
 use App\Livewire\Admin\Confirmation;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
+use App\Livewire\Admin\Report;
+use App\Livewire\Admin\ReportReservation;
 use App\Livewire\Admin\Reservation as AdminReservation;
 use App\Livewire\Admin\ReservationForm;
 use App\Livewire\Admin\UserForm;
@@ -50,6 +52,16 @@ Route::group([
     'prefix' => 'admin',
 ], function () {
     Route::get('/dashboard', AdminDashboard::class)->name('admin.dashboard');
+    Route::get('/export-pdf', [AdminReservation::class, 'exportPdfReservation'])->name('admin.export.pdf');
+    Route::get('/export-pdf-boarding-house', [AdminBoardingHouse::class, 'exportPdfBoardingHouse'])->name('admin.export.pdf.bh');
+    Route::get('/export-pdf-users', [Users::class, 'exportPdfBoardingHouse'])->name('admin.export.pdf.users');
+    
+    Route::group([
+        'prefix' => 'report'
+    ], function () {
+        Route::get('/', Report::class)->name('admin.report');
+        Route::get('/reservation', ReportReservation::class)->name('admin.report.reservation');
+    });
 
     Route::group([
         'prefix' => 'boarding-houses'

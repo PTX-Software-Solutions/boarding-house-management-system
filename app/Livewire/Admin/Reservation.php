@@ -3,11 +3,16 @@
 namespace App\Livewire\Admin;
 
 use App\Enums\StatusEnums;
+use App\Exports\UsersExport;
 use App\Models\Reservation as ModelsReservation;
 use App\Models\Status;
+use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class Reservation extends Component
 {
@@ -50,6 +55,22 @@ class Reservation extends Component
         ModelsReservation::where('id', $id)->update([
             'statusId' => $status->id
         ]);
+    }
+
+    public function exportExcelReservation()
+    {
+        return Excel::download(new UsersExport, 'reservations' . Carbon::now()->format('YmdHis') . '.xlsx');
+    }
+
+    public function exportPdfReservation()
+    {
+        $reservations = ModelsReservation::with('getUser', 'getHouse', 'getRoom', 'getStatus')
+            ->orderBy('created_at', 'DESC')
+            ->get()
+            ->toArray();
+
+        $pdf = PDF::loadView('pdf.reservations', ['reservations' => $reservations]);
+        return $pdf->download('reservations' . Carbon::now()->format('YmdHis') . '.pdf');
     }
 
     #[Layout('components.layouts.adminAuth')]

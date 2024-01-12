@@ -31,7 +31,6 @@ class AdminLogin extends Component
     public function login()
     {
         $this->validate();
-
         try {
             $user = User::where('email', $this->email)->first();
 

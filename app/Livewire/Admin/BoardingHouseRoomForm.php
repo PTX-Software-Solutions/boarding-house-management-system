@@ -79,6 +79,7 @@ class BoardingHouseRoomForm extends Component
     public function removeRoomUtility($index)
     {
         unset($this->roomUtilities[$index]);
+        unset($this->selectedUtilities[$index]);
     }
 
     public function updatedRoomUtilities($data, $key)
@@ -244,7 +245,7 @@ class BoardingHouseRoomForm extends Component
                     'monthlyDeposit'    => $validated['monthDeposit'],
                     'houseId'           => $this->id,
                     'roomTypeId'        => $validated['roomType'],
-                    'paymentAgreementId'=> $validated['paymentAgreementType'],
+                    'paymentAgreementId' => $validated['paymentAgreementType'],
                     'statusId'          => $validated['status']
                 ]);
 
@@ -299,7 +300,7 @@ class BoardingHouseRoomForm extends Component
                     'monthlyDeposit'    => $validated['monthDeposit'],
                     'houseId'           => $this->id,
                     'roomTypeId'        => $validated['roomType'],
-                    'paymentAgreementId'=> $validated['paymentAgreementType'],
+                    'paymentAgreementId' => $validated['paymentAgreementType'],
                     'statusId'          => $validated['status']
                 ]);
 

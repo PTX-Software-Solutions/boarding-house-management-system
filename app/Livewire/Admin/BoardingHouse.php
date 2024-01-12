@@ -2,11 +2,16 @@
 
 namespace App\Livewire\Admin;
 
+use App\Enums\StatusEnums;
+use App\Exports\BoardingHouseExcelExport;
 use App\Models\House;
+use Carbon\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class BoardingHouse extends Component
 {
@@ -52,10 +57,50 @@ class BoardingHouse extends Component
         House::where('id', $id)->delete();
     }
 
+    public function exportPdfBoardingHouse()
+    {
+        $boardingHouses = House::withCount([
+            'getRooms as vacant_rooms' => function ($query1) {
+                $query1->whereHas('getStatus', function ($query2) {
+                    $query2->where('serial_id', StatusEnums::VACANT);
+                });
+            },
+            'getRooms as occupied_rooms' => function ($query1) {
+                $query1->whereHas('getStatus', function ($query2) {
+                    $query2->where('serial_id', StatusEnums::OCCUPIED);
+                });
+            }
+        ])
+            ->latest()
+            ->get()
+            ->toArray();
+
+        $pdf = PDF::loadView('pdf.boarding-house', ['boardingHouses' => $boardingHouses]);
+        return $pdf->download('reservations' . Carbon::now()->format('YmdHis') . '.pdf');
+    }
+
+    public function exportExcelBoardingHouse()
+    {
+        return Excel::download(new BoardingHouseExcelExport, 'boarding_house' . Carbon::now()->format('YmdHis') . '.xlsx');
+    }
+
     #[Layout('components.layouts.adminAuth')]
     public function render()
     {
-        $boardingHouses = House::latest()->paginate(10);
+        $boardingHouses = House::withCount([
+            'getRooms as vacant_rooms' => function ($query1) {
+                $query1->whereHas('getStatus', function ($query2) {
+                    $query2->where('serial_id', StatusEnums::VACANT);
+                });
+            },
+            'getRooms as occupied_rooms' => function ($query1) {
+                $query1->whereHas('getStatus', function ($query2) {
+                    $query2->where('serial_id', StatusEnums::OCCUPIED);
+                });
+            }
+        ])
+            ->latest()
+            ->paginate(10);
 
         return view('livewire.admin.boarding-house', [
             'boardingHouses' => $boardingHouses

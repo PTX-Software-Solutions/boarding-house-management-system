@@ -47,12 +47,12 @@
             <span>{{ __('Confirmations') }}</span></a>
     </li>
 
-    <!-- Nav Item - Reports -->
-    <li class="nav-item">
-        <a class="nav-link" href="#" wire:navigate>
-            <i class="fa-solid fa-book"></i>
-            <span>{{ __('Reports') }}</span></a>
-    </li>
+    {{-- <!-- Nav Item - Reports -->
+    <li class="nav-item {{ Nav::isRoute('admin.report') }}">
+        <a class="nav-link" href="{{ route('admin.report') }}" wire:navigate>
+            <i class="fa-solid fa-book" aria-hidden="true"></i>
+            <span>{{ __('Report') }}</span></a>
+    </li> --}}
 
     <!-- Divider -->
     <hr class="sidebar-divider">

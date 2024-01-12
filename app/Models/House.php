@@ -23,7 +23,8 @@ class House extends Model
         'latitude'
     ];
 
-    public function getUser() {
+    public function getUser()
+    {
         return $this->belongsTo(User::class, 'userId');
     }
 
@@ -54,7 +55,7 @@ class House extends Model
 
     public function getRooms()
     {
-        return $this->hasMany(Room::class, 'roomId', 'id');
+        return $this->hasMany(Room::class, 'houseId', 'id');
     }
 
     public function getSocialLinksInOrder()

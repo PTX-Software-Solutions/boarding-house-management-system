@@ -12,6 +12,17 @@
         </button>
     </div>
 
+    <div>
+        <button wire:click="exportExcelReservation" class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
+            Export to excel
+        </button>
+        <a href="{{ route('admin.export.pdf') }}">
+            <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
+                Export to pdf
+            </button>
+        </a>
+    </div>
+
     <table class="table">
         <thead class="thead-light">
             <tr>
