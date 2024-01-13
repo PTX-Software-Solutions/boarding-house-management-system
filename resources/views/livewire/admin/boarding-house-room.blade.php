@@ -6,7 +6,12 @@
     <!-- Page Heading -->
     <h1 class="h3 mb-4 text-gray-800">{{ __('Rooms') }}</h1>
 
-    <div class="d-flex justify-content-end">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <input type="text" wire:model.live="search" placeholder="Search Room Name" id="form1"
+                class="form-control" autocomplete="off" />
+        </div>
+
         <button wire:click="createRooms"
             class="bg-primary text-white border-radius px-3 py-2
         rounded border my-4">

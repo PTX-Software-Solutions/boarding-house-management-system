@@ -124,10 +124,6 @@ class Home extends Component
                     $query4->where('serial_id', StatusEnums::VACANT);
                 })
                 ->where('monthlyDeposit', '<=', $this->priceRange);
-                // ->with(['getStatus' => function ($query4) {
-                //     $query4->where('serial_id', StatusEnums::VACANT);
-                // }]);
-            // ->where('serial_id', StatusEnums::VACANT);
         })
             ->with(['getHousePhoto' => function ($query) {
                 $query->select('houseId', 'imageUrl');
@@ -148,8 +144,6 @@ class Home extends Component
             ->whereRaw("{$haversine} < ?", [(int) $this->selectedDistance])
             ->orderBy('created_at', 'desc')
             ->get();
-
-            // dd($houses);
 
         $customLocations = [];
 

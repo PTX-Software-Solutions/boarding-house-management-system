@@ -9,9 +9,14 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Livewire\Attributes\Url;
 
 class Users extends Component
 {
+
+    #[Url(history: true)]
+    public $search;
 
     public function editUser($id)
     {
@@ -25,13 +30,19 @@ class Users extends Component
 
     public function exportExcelUsers()
     {
-        return Excel::download(new UserExcelExport, 'users' . Carbon::now()->format('YmdHis') . '.xlsx');
+        return Excel::download(new UserExcelExport($this->search), 'users' . Carbon::now()->format('YmdHis') . '.xlsx');
     }
 
-    public function exportPdfBoardingHouse()
+    public function exportPdfBoardingHouse(Request $request)
     {
+        $search = $request->query('search') ?? false;
+
         $users = User::with('status', 'userType')
             ->orderBy('created_at', 'DESC')
+            ->when($search, function ($query) use($search) {
+                $query->where('firstName', 'LIKE', '%' . $search . '%')
+                    ->orWhere('lastName', 'LIKE', '%' . $search . '%');
+            })
             ->get()
             ->toArray();
 
@@ -42,7 +53,13 @@ class Users extends Component
     #[Layout('components.layouts.adminAuth')]
     public function render()
     {
-        $users = User::with('status', 'userType')->orderBy('created_at', 'DESC')->paginate(10);
+        $users = User::with('status', 'userType')
+            ->orderBy('created_at', 'DESC')
+            ->when($this->search, function ($query) {
+                $query->where('firstName', 'LIKE', '%' . $this->search . '%')
+                    ->orWhere('lastName', 'LIKE', '%' . $this->search . '%');
+            })
+            ->paginate(10);
 
         return view('livewire.admin.users', [
             'users' => $users

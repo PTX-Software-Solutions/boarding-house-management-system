@@ -12,10 +12,14 @@ use Livewire\Attributes\On;
 use Livewire\Component;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Illuminate\Http\Request;
+use Livewire\Attributes\Url;
 
 class Reservation extends Component
 {
+
+    #[Url(history: true)]
+    public $search;
 
     public function createReservation()
     {
@@ -59,13 +63,24 @@ class Reservation extends Component
 
     public function exportExcelReservation()
     {
-        return Excel::download(new UsersExport, 'reservations' . Carbon::now()->format('YmdHis') . '.xlsx');
+        return Excel::download(new UsersExport($this->search), 'reservations' . Carbon::now()->format('YmdHis') . '.xlsx');
     }
 
-    public function exportPdfReservation()
+    public function exportPdfReservation(Request $request)
     {
+        $search = $request->query('search') ?? false;
+
         $reservations = ModelsReservation::with('getUser', 'getHouse', 'getRoom', 'getStatus')
             ->orderBy('created_at', 'DESC')
+            ->when($search, function ($query) use ($search) {
+                $query->whereHas('getUser', function ($query1) use ($search) {
+                    $query1->where('firstName', 'LIKE', '%' . $search . '%')
+                        ->orWhere('lastName', 'LIKE', '%' . $search . '%');
+                })
+                    ->orWhereHas('getHouse', function ($query2) use ($search) {
+                        $query2->where('houseName', 'LIKE', '%' . $search . '%');
+                    });
+            })
             ->get()
             ->toArray();
 
@@ -78,6 +93,15 @@ class Reservation extends Component
     {
         $reservations = ModelsReservation::with('getUser', 'getHouse', 'getRoom', 'getStatus')
             ->orderBy('created_at', 'DESC')
+            ->when($this->search, function ($query) {
+                $query->whereHas('getUser', function ($query1) {
+                    $query1->where('firstName', 'LIKE', '%' . $this->search . '%')
+                        ->orWhere('lastName', 'LIKE', '%' . $this->search . '%');
+                })
+                    ->orWhereHas('getHouse', function ($query2) {
+                        $query2->where('houseName', 'LIKE', '%' . $this->search . '%');
+                    });
+            })
             ->paginate(10);
         return view('livewire.admin.reservation', [
             'reservations' => $reservations

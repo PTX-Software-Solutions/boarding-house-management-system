@@ -12,12 +12,17 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Livewire\Attributes\Url;
 
 class BoardingHouse extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     public $id;
+
+    #[Url(history: true)]
+    public $search;
 
     public function createBoardingHouse()
     {
@@ -57,8 +62,9 @@ class BoardingHouse extends Component
         House::where('id', $id)->delete();
     }
 
-    public function exportPdfBoardingHouse()
+    public function exportPdfBoardingHouse(Request $request)
     {
+        $search = $request->query('search') ?? false;
         $boardingHouses = House::withCount([
             'getRooms as vacant_rooms' => function ($query1) {
                 $query1->whereHas('getStatus', function ($query2) {
@@ -71,6 +77,9 @@ class BoardingHouse extends Component
                 });
             }
         ])
+            ->when($search, function ($query3) use ($search) {
+                $query3->where('houseName', 'LIKE', '%' . $search . '%');
+            })
             ->latest()
             ->get()
             ->toArray();
@@ -81,7 +90,7 @@ class BoardingHouse extends Component
 
     public function exportExcelBoardingHouse()
     {
-        return Excel::download(new BoardingHouseExcelExport, 'boarding_house' . Carbon::now()->format('YmdHis') . '.xlsx');
+        return Excel::download(new BoardingHouseExcelExport($this->search), 'boarding_house' . Carbon::now()->format('YmdHis') . '.xlsx');
     }
 
     #[Layout('components.layouts.adminAuth')]
@@ -99,6 +108,9 @@ class BoardingHouse extends Component
                 });
             }
         ])
+            ->when($this->search, function ($query3) {
+                $query3->where('houseName', 'LIKE', '%' . $this->search . '%');
+            })
             ->latest()
             ->paginate(10);
 

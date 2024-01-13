@@ -12,16 +12,25 @@
         </button>
     </div>
 
-    <div>
-        <button wire:click="exportExcelBoardingHouse" class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
-            Export to excel
-        </button>
-        <a href="{{ route('admin.export.pdf.bh') }}">
-            <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
-                Export to pdf
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <button wire:click="exportExcelBoardingHouse"
+                class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
+                Export to excel
             </button>
-        </a>
+            <a href="{{ url('admin/export-pdf-boarding-house/?search=' . $search) }}">
+                <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
+                    Export to pdf
+                </button>
+            </a>
+        </div>
+
+        <div>
+            <input type="text" wire:model.live="search" placeholder="Search House Name" id="form1"
+                class="form-control" autocomplete="off" />
+        </div>
     </div>
+
 
     <table class="table">
         <thead class="thead-light">

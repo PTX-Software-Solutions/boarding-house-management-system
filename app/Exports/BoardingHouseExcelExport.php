@@ -9,6 +9,14 @@ use Maatwebsite\Excel\Concerns\FromView;
 
 class BoardingHouseExcelExport implements FromView
 {
+
+    public $search;
+
+    public function __construct($search)
+    {
+        $this->search = $search;
+    }
+
     public function view(): View
     {
         $boardingHouses = House::withCount([
@@ -23,6 +31,9 @@ class BoardingHouseExcelExport implements FromView
                 });
             }
         ])
+            ->when($this->search, function ($query3) {
+                $query3->where('houseName', 'LIKE', '%' . $this->search . '%');
+            })
             ->latest()
             ->get();
 

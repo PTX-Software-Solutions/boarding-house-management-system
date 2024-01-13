@@ -4,14 +4,19 @@ namespace App\Livewire\Admin;
 
 use App\Models\Room;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 class BoardingHouseRoom extends Component
 {
 
     public $id;
+
+    #[Url(history: true)]
+    public $search;
 
     public function mount($id)
     {
@@ -51,12 +56,14 @@ class BoardingHouseRoom extends Component
         $rooms = Room::with([
             'getRoomType' => function ($query1) {
                 $query1->select('id', 'serial_id', 'name');
-            }
-            , 'amenities',
+            }, 'amenities',
             'getStatus' => function ($query2) {
                 $query2->select('id', 'serial_id', 'name');
             }
         ])->where('houseId', $this->id)
+            ->when($this->search, function ($query) {
+                $query->where('name', 'LIKE', '%' . $this->search . '%');
+            })
             ->latest()
             ->paginate(10);
 

@@ -11,16 +11,23 @@
         </button>
     </div>
 
-    <div>
-        <button wire:click="exportExcelUsers"
-            class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
-            Export to excel
-        </button>
-        <a href="{{ route('admin.export.pdf.users') }}">
-            <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
-                Export to pdf
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <button wire:click="exportExcelUsers"
+                class="bg-success text-white border-radius px-3 py-2 rounded border my-4">
+                Export to excel
             </button>
-        </a>
+            <a href="{{ url('admin/export-pdf-users/?search=' . $search) }}">
+                <button class="bg-danger text-white border-radius px-3 py-2 rounded border my-4">
+                    Export to pdf
+                </button>
+            </a>
+        </div>
+
+        <div>
+            <input type="text" wire:model.live="search" placeholder="Search User Name" id="form1"
+                class="form-control" autocomplete="off" />
+        </div>
     </div>
 
 
