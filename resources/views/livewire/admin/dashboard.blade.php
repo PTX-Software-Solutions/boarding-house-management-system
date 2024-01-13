@@ -75,7 +75,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fa-solid fa-house-lock fa-2x text-gray-300"></i>
-                            {{-- <i class="fas fa-clipboard-list "></i> --}}
                         </div>
                     </div>
                 </div>
@@ -113,7 +112,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fa fa-sign-in fa-2x text-gray-300" aria-hidden="true"></i>
-                            {{-- <i class="fas fa-users fa-2x text-gray-300"></i> --}}
                         </div>
                     </div>
                 </div>
@@ -132,8 +130,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fa-solid fa-money-bill fa-2x text-gray-300"></i>
-                            {{-- <i class="fas fa-credit-card"></i> --}}
-                            {{-- <i class="fas fa-dollar-sign "></i> --}}
                         </div>
                     </div>
                 </div>
@@ -154,8 +150,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fa-solid fa-money-bill fa-2x text-gray-300"></i>
-                            {{-- <i class="fas fa-credit-card"></i> --}}
-                            {{-- <i class="fas fa-dollar-sign "></i> --}}
                         </div>
                     </div>
                 </div>
@@ -174,8 +168,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fa-solid fa-money-bill fa-2x text-gray-300"></i>
-                            {{-- <i class="fas fa-credit-card"></i> --}}
-                            {{-- <i class="fas fa-dollar-sign "></i> --}}
                         </div>
                     </div>
                 </div>

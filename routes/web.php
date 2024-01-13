@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AdminProfile;
 use App\Livewire\Admin\BoardingHouse as AdminBoardingHouse;
 use App\Livewire\Admin\BoardingHouseForm;
 use App\Livewire\Admin\BoardingHouseRoom;
@@ -19,6 +20,13 @@ use App\Livewire\Auth\User\UserRegister;
 use App\Livewire\Houses\HousesForm;
 use App\Livewire\Houses\HousesTable;
 use App\Livewire\Management\Dashboard;
+use App\Livewire\Management\ManagementBoardingHouse;
+use App\Livewire\Management\ManagementBoardingHouseForm;
+use App\Livewire\Management\ManagementBoardingHouseRoom;
+use App\Livewire\Management\ManagementBoardingHouseRoomForm;
+use App\Livewire\Management\ManagementConfirmation;
+use App\Livewire\Management\ManagementProfile;
+use App\Livewire\Management\ManagementReservation;
 use App\Livewire\User\BoardingHouse;
 use App\Livewire\User\Home;
 use App\Livewire\User\Profile;
@@ -55,7 +63,7 @@ Route::group([
     Route::get('/export-pdf', [AdminReservation::class, 'exportPdfReservation'])->name('admin.export.pdf');
     Route::get('/export-pdf-boarding-house', [AdminBoardingHouse::class, 'exportPdfBoardingHouse'])->name('admin.export.pdf.bh');
     Route::get('/export-pdf-users', [Users::class, 'exportPdfBoardingHouse'])->name('admin.export.pdf.users');
-    
+
     Route::group([
         'prefix' => 'report'
     ], function () {
@@ -84,7 +92,7 @@ Route::group([
 
     Route::group([
         'prefix' => 'reservations'
-    ], function() {
+    ], function () {
         Route::get('/', AdminReservation::class)->name('admin.reservations');
         Route::get('/create', ReservationForm::class)->name('admin.reservation.create');
         Route::get('/edit/{id}', ReservationForm::class)->name('admin.reservation.edit');
@@ -92,10 +100,11 @@ Route::group([
 
     Route::group([
         'prefix' => 'confirmations'
-    ], function() {
+    ], function () {
         Route::get('/', Confirmation::class)->name('admin.confirmations');
     });
 
+    Route::get('/profile', AdminProfile::class)->name('admin.profile');
 });
 
 // MANAGEMENT GUEST
@@ -112,6 +121,35 @@ Route::group([
     'prefix'     => 'management',
 ], function () {
     Route::get('/dashboard', Dashboard::class)->name('management.dashboard');
+    Route::get('/export-pdf-boarding-house', [ManagementBoardingHouse::class, 'exportPdfBoardingHouse'])->name('management.export.pdf.bh');
+    Route::get('/export-pdf', [ManagementReservation::class, 'exportPdfReservation'])->name('management.export.pdf');
+
+    Route::group([
+        'prefix' => 'boarding-houses'
+    ], function () {
+        Route::get('/', ManagementBoardingHouse::class)->name('management.boarding-house');
+        Route::get('/create', ManagementBoardingHouseForm::class)->name('management.boarding.house.create');
+        Route::get('/edit/{id}', ManagementBoardingHouseForm::class)->name('management.boarding.house.edit');
+        Route::get('/{id}/rooms', ManagementBoardingHouseRoom::class)->name('management.boarding-house.rooms');
+        Route::get('/{id}/rooms/create', ManagementBoardingHouseRoomForm::class)->name('management.boarding-house.rooms.create');
+        Route::get('/{id}/rooms/edit/{roomId}', ManagementBoardingHouseRoomForm::class)->name('management.boarding-house.rooms.edit');
+    });
+
+    Route::group([
+        'prefix' => 'reservations'
+    ], function () {
+        Route::get('/', ManagementReservation::class)->name('management.reservations');
+        Route::get('/create', ReservationForm::class)->name('management.reservation.create');
+        Route::get('/edit/{id}', ReservationForm::class)->name('management.reservation.edit');
+    });
+
+    Route::group([
+        'prefix' => 'confirmations'
+    ], function () {
+        Route::get('/', ManagementConfirmation::class)->name('management.confirmations');
+    });
+
+    Route::get('/profile', ManagementProfile::class)->name('management.profile');
 });
 
 // USER GUEST

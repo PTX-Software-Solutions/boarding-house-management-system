@@ -3,9 +3,6 @@
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-        {{-- <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
-        </div> --}}
         <div class="sidebar-brand-text mx-3">BH Finder and Reservation</div>
     </a>
 
@@ -46,24 +43,6 @@
             <i class="fa fa-check-square" aria-hidden="true"></i>
             <span>{{ __('Confirmations') }}</span></a>
     </li>
-
-    {{-- <!-- Nav Item - Reports -->
-    <li class="nav-item {{ Nav::isRoute('admin.report') }}">
-        <a class="nav-link" href="{{ route('admin.report') }}" wire:navigate>
-            <i class="fa-solid fa-book" aria-hidden="true"></i>
-            <span>{{ __('Report') }}</span></a>
-    </li> --}}
-
-    {{-- <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Heading -->
-    <div class="sidebar-heading">
-        {{ __('Settings') }}
-    </div>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block"> --}}
 
     <!-- Sidebar Toggler (Sidebar) -->
     <div class="text-center d-none d-md-inline">

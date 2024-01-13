@@ -13,10 +13,31 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ Nav::isRoute('admin.dashboard') }}">
-        <a class="nav-link" href="{{ route('admin.dashboard') }}" wire:navigate>
+    <li class="nav-item {{ Nav::isRoute('management.dashboard') }}">
+        <a class="nav-link" href="{{ route('management.dashboard') }}" wire:navigate>
             <i class="fa fa-list-alt" aria-hidden="true"></i>
             <span>{{ __('Dashboard') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Boarding-House -->
+    <li class="nav-item {{ Nav::isRoute('management.boarding-house') }}">
+        <a class="nav-link" href="{{ route('management.boarding-house') }}" wire:navigate>
+            <i class="fa fa-list-ul" aria-hidden="true"></i>
+            <span>{{ __('Boarding Houses') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Reservations -->
+    <li class="nav-item {{ Nav::isRoute('management.reservations') }}">
+        <a class="nav-link" href="{{ route('management.reservations') }}" wire:navigate>
+            <i class="fa-solid fa-bars-progress"></i>
+            <span>{{ __('Reservations') }}</span></a>
+    </li>
+
+    <!-- Nav Item - Confirmation -->
+    <li class="nav-item {{ Nav::isRoute('management.confirmations') }}">
+        <a class="nav-link" href="{{ route('management.confirmations') }}" wire:navigate>
+            <i class="fa fa-check-square" aria-hidden="true"></i>
+            <span>{{ __('Confirmations') }}</span></a>
     </li>
 
     <!-- Divider -->

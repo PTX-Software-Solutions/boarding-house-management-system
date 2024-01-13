@@ -15,6 +15,11 @@ class Topbar extends Component
         $this->topBar = !$this->topBar;
     }
 
+    public function profile()
+    {
+        return $this->redirect('/admin/profile', navigate: true);
+    }
+
     public function logout(Request $request)
     {
         Auth::guard('admin')->logout();

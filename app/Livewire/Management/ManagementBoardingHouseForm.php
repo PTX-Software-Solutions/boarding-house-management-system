@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Management;
 
 use App\Enums\UserTypeEnums;
 use App\Models\DistanceTypes;
@@ -11,22 +11,17 @@ use App\Models\SocialMedia;
 use App\Models\SocialMediaType;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Rule;
+use Illuminate\Validation\Rule;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule as ValidationRule;
+use Livewire\Attributes\Layout;
 
-class BoardingHouseForm extends Component
+class ManagementBoardingHouseForm extends Component
 {
     use WithFileUploads;
-
-    public $userId;
 
     public $houseName = '';
 
@@ -63,7 +58,6 @@ class BoardingHouseForm extends Component
     public function rules()
     {
         return [
-            'userId' => 'required',
             'houseName' => 'required',
             'contact' => 'required',
             'address' => 'required',
@@ -78,11 +72,11 @@ class BoardingHouseForm extends Component
             'attractionLists.*.distanceType' => 'required',
             'socialLinks' => 'nullable|array',
             // 'socialLinks.*.link' => 'nullable',
-            'socialLinks.*.link' => ValidationRule::requiredIf(function () {
+            'socialLinks.*.link' => Rule::requiredIf(function () {
                 // The link is required only if a social media account is provided
                 return !empty($this->socialLinks) && is_array($this->socialLinks);
             }),
-            'socialLinks.*.socialType' => ValidationRule::requiredIf(function () {
+            'socialLinks.*.socialType' => Rule::requiredIf(function () {
                 // The link is required only if a social media account is provided
                 return !empty($this->socialLinks) && is_array($this->socialLinks);
             }),
@@ -92,7 +86,6 @@ class BoardingHouseForm extends Component
     public function messages()
     {
         return [
-            'userId.required' => 'The home owner is required',
             'attractionLists.required' => 'The attraction field is required',
             'attractionLists.*.name.required' => 'The name field is required',
             'attractionLists.*.distance.required' => 'The distance field is required',
@@ -104,7 +97,7 @@ class BoardingHouseForm extends Component
 
     public function back()
     {
-        return $this->redirect('/admin/boarding-houses', navigate: true);
+        return $this->redirect('/management/boarding-houses', navigate: true);
     }
 
     public function changeTab(int $tabNum)
@@ -159,7 +152,6 @@ class BoardingHouseForm extends Component
         }])->findOrFail($id);
 
         $this->id = $house->id;
-        $this->userId = $house->userId;
         $this->houseName = $house->houseName;
         $this->contact = $house->contact;
         $this->address = $house->address;
@@ -246,7 +238,6 @@ class BoardingHouseForm extends Component
                 $bh = House::with('getNearbyAttractions', 'getHousePhoto', 'getSocialLinks')->findOrFail($this->id);
 
                 $bh->update([
-                    'userId'    => $data['userId'],
                     'houseName' => $data['houseName'],
                     'contact'   => $data['contact'],
                     'address'   => $data['address'],
@@ -313,7 +304,7 @@ class BoardingHouseForm extends Component
                 $this->dispatch('success-update');
             } else {
                 $house = House::create([
-                    'userId'    => $data['userId'],
+                    'userId'    => Auth::guard('management')->user()->id,
                     'houseName' => $data['houseName'],
                     'contact'   => $data['contact'],
                     'address'   => $data['address'],
@@ -360,11 +351,10 @@ class BoardingHouseForm extends Component
                 $this->dispatch('success-insert');
             }
 
-            return $this->redirect('/admin/boarding-houses', navigate: true);
+            return $this->redirect('/management/boarding-houses', navigate: true);
         } catch (Exception $e) {
-            Log::debug($e);
             DB::rollBack();
-            return $this->redirect('/admin/boarding-houses', navigate: true);
+            return $this->redirect('/management/boarding-houses', navigate: true);
         }
     }
 
@@ -373,7 +363,7 @@ class BoardingHouseForm extends Component
         unset($this->uploadImage[$index]);
     }
 
-    #[Layout('components.layouts.adminAuth')]
+    #[Layout('components.layouts.managementAuth')]
     public function render()
     {
         $distanceTypes = DistanceTypes::select(
@@ -401,10 +391,13 @@ class BoardingHouseForm extends Component
             )
             ->get();
 
-        return view('livewire.admin.boarding-house-form', [
+        return view('livewire.management.management-boarding-house-form', [
             'homeOwners'        => $homeOwners,
             'distanceTypes'     => $distanceTypes,
             'socialMediaTypes'  => $socialMediaTypes,
         ]);
     }
 }
+
+
+// 'livewire.management.management-boarding-house-form'
