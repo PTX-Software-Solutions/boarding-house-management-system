@@ -13,7 +13,7 @@
     <hr class="sidebar-divider my-0">
 
     <!-- Nav Item - Dashboard -->
-    <li class="nav-item {{ Nav::isRoute('user.home') }}">
+    <li class="nav-item {{ Nav::isRoute('user.home*') }}">
         <a class="nav-link" href="{{ route('user.home') }}" wire:navigate>
             <i class="fa fa-search" aria-hidden="true"></i>
             <span>{{ __('Find Boarding House') }}</span></a>

@@ -75,8 +75,8 @@ Route::group([
         'prefix' => 'boarding-houses'
     ], function () {
         Route::get('/', AdminBoardingHouse::class)->name('admin.boarding-house');
-        Route::get('/create', BoardingHouseForm::class)->name('admin.boarding.house.create');
-        Route::get('/edit/{id}', BoardingHouseForm::class)->name('admin.boarding.house.edit');
+        Route::get('/create', BoardingHouseForm::class)->name('admin.boarding-house.create');
+        Route::get('/edit/{id}', BoardingHouseForm::class)->name('admin.boarding-house.edit');
         Route::get('/{id}/rooms', BoardingHouseRoom::class)->name('admin.boarding-house.rooms');
         Route::get('/{id}/rooms/create', BoardingHouseRoomForm::class)->name('admin.boarding-house.rooms.create');
         Route::get('/{id}/rooms/edit/{roomId}', BoardingHouseRoomForm::class)->name('admin.boarding-house.rooms.edit');
@@ -128,8 +128,8 @@ Route::group([
         'prefix' => 'boarding-houses'
     ], function () {
         Route::get('/', ManagementBoardingHouse::class)->name('management.boarding-house');
-        Route::get('/create', ManagementBoardingHouseForm::class)->name('management.boarding.house.create');
-        Route::get('/edit/{id}', ManagementBoardingHouseForm::class)->name('management.boarding.house.edit');
+        Route::get('/create', ManagementBoardingHouseForm::class)->name('management.boarding-house.create');
+        Route::get('/edit/{id}', ManagementBoardingHouseForm::class)->name('management.boarding-house.edit');
         Route::get('/{id}/rooms', ManagementBoardingHouseRoom::class)->name('management.boarding-house.rooms');
         Route::get('/{id}/rooms/create', ManagementBoardingHouseRoomForm::class)->name('management.boarding-house.rooms.create');
         Route::get('/{id}/rooms/edit/{roomId}', ManagementBoardingHouseRoomForm::class)->name('management.boarding-house.rooms.edit');
@@ -167,8 +167,8 @@ Route::group([
 ], function () {
 
     Route::get('/', Home::class)->name('user.home');
-    Route::get('/boarding-houses/{id}', BoardingHouse::class)->name('user.boarding-house');
-    Route::get('/boarding-houses/{id}/room-details/{roomId}', RoomDetails::class)->name('user.room-details');
+    Route::get('/boarding-houses/{id}', BoardingHouse::class)->name('user.home.boarding-house');
+    Route::get('/boarding-houses/{id}/room-details/{roomId}', RoomDetails::class)->name('user.home.room-details');
     Route::get('/reservations', Reservation::class)->name('user.reservation');
     Route::get('/transaction', Transaction::class)->name('user.transaction');
 

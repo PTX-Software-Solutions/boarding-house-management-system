@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('deletePending:reservations')->dailyAt('10:29')->timezone('Asia/Manila');
+        $schedule->command('deletePending:reservations')->dailyAt('10:31')->timezone('Asia/Manila');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\StatusEnums;
 use App\Enums\UserTypeEnums;
 use App\Traits\UUID;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -80,6 +81,11 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->userType->serial_id === UserTypeEnums::ADMIN;
+    }
+
+    public function isBanned()
+    {
+        return $this->status->serial_id === StatusEnums::BANNED;
     }
 
     public function isManagement()

@@ -32,8 +32,6 @@ class DeletePendingReservations extends Command
     {
         $previousDay = now()->subDay()->format('Y-m-d');
 
-        // Log::debug($previousDay);
-
         $pendingReservations = Reservation::whereHas('getStatus', function ($query1) {
             $query1->where('serial_id', StatusEnums::PENDING);
         })->where('checkIn', $previousDay)

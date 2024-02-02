@@ -82,7 +82,7 @@
                                                 <div class="d-flex flex-wrap">
                                                     <div style="width: 100px; height: 100px; position: relative;"
                                                         class="mx-1">
-                                                        <img src="{{ Storage::url('public/images/' . $oldImage) }}"
+                                                        <img src="{{ asset('storage/public/images/' . $oldImage) }}"
                                                             class="img-thumbnail rounded"
                                                             style="width: 100%; height: 100%; object-fit: contain;"
                                                             alt="">

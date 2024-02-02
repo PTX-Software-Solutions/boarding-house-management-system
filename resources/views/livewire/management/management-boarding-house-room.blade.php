@@ -35,7 +35,7 @@
             @forelse ($rooms as $room)
                 <tr wire:key="{{ $room->id }}">
                     <th scope="row">{{ $room->name }}</th>
-                    <td>{{ $room->monthlyDeposit }}</td>
+                    <td>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</td>
                     <td>{{ $room->getRoomType->name }}</td>
                     <td>
                         @if ($room->amenities->isNotEmpty())
@@ -44,7 +44,7 @@
                             @endforeach
                         @endif
                     </td>
-                    <td>{{ $room->getStatus->name }}</td>
+                    <td><span class="badge {{ $room->getStatus->serial_id === 16 ? 'badge-warning' : 'badge-success' }}">{{ $room->getStatus->name }}</span></td>
                     <td>
                         <button wire:click="editRoom('{{ $room->id }}')"
                             class="btn btn-info delete-header m-1 btn-sm text-white" title="Edit" data-toggle="modal"

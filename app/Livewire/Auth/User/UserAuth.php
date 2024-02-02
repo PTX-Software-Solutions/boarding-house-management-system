@@ -50,6 +50,11 @@ class UserAuth extends Component
                 return;
             }
 
+            if ($user->isBanned()) {
+                $this->addError('login', 'Your account has been banned!');
+                return;
+            }
+
             // Authenticate the user
             if (Auth::guard('web')->attempt([
                 'email' => $this->email,
