@@ -74,6 +74,11 @@ class UserAuth extends Component
         return $this->redirect('/register', navigate: true);
     }
 
+    public function forgotPassword()
+    {
+        return $this->redirect('/forgot-password', navigate: true);
+    }
+
     #[Layout('components.layouts.userGuest')]
     public function render()
     {

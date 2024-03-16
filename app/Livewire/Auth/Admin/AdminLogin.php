@@ -60,6 +60,11 @@ class AdminLogin extends Component
         }
     }
 
+    public function forgotPassword()
+    {
+        return $this->redirect('/admin/forgot-password', navigate: true);
+    }
+
     #[Layout('components.layouts.adminGuest')]
     public function render()
     {

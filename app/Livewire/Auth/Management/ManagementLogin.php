@@ -61,6 +61,11 @@ class ManagementLogin extends Component
         }
     }
 
+    public function forgotPassword()
+    {
+        return $this->redirect('/management/forgot-password', navigate: true);
+    }
+
 
     #[Layout('components.layouts.managementGuest')]
     public function render()

@@ -8,22 +8,15 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Management Login') }}</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Reset Password') }}</h1>
                                 </div>
 
-                                @error('login')
-                                    <div class="alert alert-danger">
-                                        <p class="text-danger">{{ $message }}</p>
-                                    </div>
+                                @error('token')
+                                    <p class="text-danger">{{ $message }}</p>
                                 @enderror
 
-                                @if (session('status'))
-                                    <div class="alert alert-success">
-                                        {{ session('status') }}
-                                    </div>
-                                @endif
-
-                                <form wire:submit="login" wire:keydown.enter="login" class="user" autocomplete="off">
+                                <form wire:submit="handleResetPassword" wire:keydown.enter="handleResetPassword"
+                                    class="user" autocomplete="off">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                                     <div class="form-group">
@@ -36,26 +29,27 @@
                                             @enderror
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
-                                            wire:model="password" name="password" placeholder="{{ __('Password') }}">
+                                            wire:model="password" name="password" placeholder="{{ __('Password') }}"
+                                            autofocus>
                                         <div>
                                             @error('password')
                                                 <p class="text-danger">{{ $message }}</p>
                                             @enderror
                                         </div>
                                     </div>
-
-                                    <div style="display: flex; justify-content: flex-start; align-items: center">
-                                        <div class="form-group">
-                                            <div class="text-center">
-                                                <a class="small pointer" style="cursor: pointer"
-                                                    wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
-                                            </div>
+                                    <div class="form-group">
+                                        <input type="password" class="form-control form-control-user"
+                                            wire:model="password_confirmation" name="password_confirmation"
+                                            placeholder="{{ __('Confirm Password') }}"
+                                            value="{{ old('password_confirmation') }}" autofocus>
+                                        <div>
+                                            @error('password_confirmation')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
                                         </div>
                                     </div>
-
                                     <div class="form-group">
                                         <button type="submit"
                                             class="btn btn-primary btn-user btn-block 
@@ -65,19 +59,10 @@
                                                 class="spinner-border mx-2" role="status">
                                                 <span class="sr-only mx-2">Loading...</span>
                                             </div>
-                                            {{ __('Login') }}
+                                            {{ __('Send Email') }}
                                         </button>
                                     </div>
                                 </form>
-
-                                <hr>
-
-                                {{-- @if (Route::has('user.register'))
-                                    <div class="text-center">
-                                        <a class="small pointer" style="cursor: pointer"
-                                            wire:click="register">{{ __('Create an Account!') }}</a>
-                                    </div>
-                                @endif --}}
                             </div>
                         </div>
                     </div>

@@ -11,11 +11,17 @@
                                     <h1 class="h4 text-gray-900 mb-4">{{ __('Administrator Login') }}</h1>
                                 </div>
 
-                                <div>
-                                    @error('login')
+                                @error('login')
+                                    <div class="alert alert-danger">
                                         <p class="text-danger">{{ $message }}</p>
-                                    @enderror
-                                </div>
+                                    </div>
+                                @enderror
+
+                                @if (session('status'))
+                                    <div class="alert alert-success">
+                                        {{ session('status') }}
+                                    </div>
+                                @endif
 
                                 <form wire:submit="login" wire:keydown.enter="login" class="user" autocomplete="off">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
@@ -41,12 +47,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox small">
-                                            <input type="checkbox" class="custom-control-input" name="remember"
-                                                id="remember" {{ old('remember') ? 'checked' : '' }}>
-                                            <label class="custom-control-label"
-                                                for="remember">{{ __('Remember Me') }}</label>
+                                    <div style="display: flex; justify-content: flex-start; align-items: center">
+                                        <div class="form-group">
+                                            <div class="text-center">
+                                                <a class="small pointer" style="cursor: pointer"
+                                                    wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
+                                            </div>
                                         </div>
                                     </div>
 

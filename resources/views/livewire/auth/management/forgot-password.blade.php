@@ -8,14 +8,8 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Management Login') }}</h1>
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Forgot Password') }}</h1>
                                 </div>
-
-                                @error('login')
-                                    <div class="alert alert-danger">
-                                        <p class="text-danger">{{ $message }}</p>
-                                    </div>
-                                @enderror
 
                                 @if (session('status'))
                                     <div class="alert alert-success">
@@ -23,7 +17,8 @@
                                     </div>
                                 @endif
 
-                                <form wire:submit="login" wire:keydown.enter="login" class="user" autocomplete="off">
+                                <form wire:submit="forgotPasswordEmail" wire:keydown.enter="forgotPasswordEmail"
+                                    class="user" autocomplete="off">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                                     <div class="form-group">
@@ -38,46 +33,27 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                            wire:model="password" name="password" placeholder="{{ __('Password') }}">
-                                        <div>
-                                            @error('password')
-                                                <p class="text-danger">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div style="display: flex; justify-content: flex-start; align-items: center">
-                                        <div class="form-group">
-                                            <div class="text-center">
-                                                <a class="small pointer" style="cursor: pointer"
-                                                    wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
                                         <button type="submit"
                                             class="btn btn-primary btn-user btn-block 
                                         d-flex justify-content-center align-items-center">
                                             <div wire:loading wire:loading.class="opacity-50 disabled"
-                                                wire:loading.attr="disabled" wire:target="login"
+                                                wire:loading.attr="disabled" wire:target="forgotPasswordEmail"
                                                 class="spinner-border mx-2" role="status">
                                                 <span class="sr-only mx-2">Loading...</span>
                                             </div>
-                                            {{ __('Login') }}
+                                            {{ __('Send Email') }}
                                         </button>
                                     </div>
                                 </form>
 
                                 <hr>
 
-                                {{-- @if (Route::has('user.register'))
+                                @if (Route::has('user.register'))
                                     <div class="text-center">
                                         <a class="small pointer" style="cursor: pointer"
-                                            wire:click="register">{{ __('Create an Account!') }}</a>
+                                            wire:click="managementLogin">{{ __('Login Account!') }}</a>
                                     </div>
-                                @endif --}}
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -89,7 +65,7 @@
 
 <script data-navigate-track>
     function houseTableEvents() {
-        Livewire.on('success-login', (event) => {
+        Livewire.on('success-email', (event) => {
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -103,7 +79,7 @@
             });
             Toast.fire({
                 icon: "success",
-                title: "Login successfully"
+                title: "Send email successfully"
             }).then(() => {
                 @this.dispatch('login-success')
             });

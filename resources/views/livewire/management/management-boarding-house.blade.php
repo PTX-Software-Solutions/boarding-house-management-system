@@ -39,6 +39,7 @@
                 <th scope="col">Address</th>
                 <th scope="col">Vacant & Occupied House/Room</th>
                 <th scope="col">Contact</th>
+                <th scope="col">Rating</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -49,6 +50,28 @@
                     <td>{{ $boardingHouse->address }}</td>
                     <td>{{ $boardingHouse->vacant_rooms }} / {{ $boardingHouse->occupied_rooms }}</td>
                     <td>{{ $boardingHouse->contact }}</td>
+                    @php
+                        $ratings = 0;
+
+                        // Calculate the ratings
+                        if ($boardingHouse->getRatings) {
+                            foreach ($boardingHouse->getRatings as $rate) {
+                                $ratings += $rate->rating;
+                            }
+
+                            // Only calculate for the house that contains ratings
+                            if (count($boardingHouse->getRatings) > 0) {
+                                $ratings = $ratings / count($boardingHouse->getRatings);
+                            }
+                        }
+                    @endphp
+                    <td>
+                        <div class="d-flex justify-content-center align-items-center">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <i class="fa fa-star {{ $i <= $ratings ? 'text-primary' : '' }}" aria-hidden="true"></i>
+                            @endfor
+                        </div>
+                    </td>
                     <td>
                         <button wire:click="rooms('{{ $boardingHouse->id }}')"
                             class="btn btn-primary delete-header m-1 btn-sm text-white" title="Rooms"

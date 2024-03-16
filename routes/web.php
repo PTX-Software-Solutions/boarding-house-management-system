@@ -14,7 +14,13 @@ use App\Livewire\Admin\ReservationForm;
 use App\Livewire\Admin\UserForm;
 use App\Livewire\Admin\Users;
 use App\Livewire\Auth\Admin\AdminLogin;
+use App\Livewire\Auth\Admin\ForgotPassword as AdminForgotPassword;
+use App\Livewire\Auth\Admin\ResetPassword as AdminResetPassword;
+use App\Livewire\Auth\Management\ForgotPassword as ManagementForgotPassword;
 use App\Livewire\Auth\Management\ManagementLogin;
+use App\Livewire\Auth\Management\ResetPassword as ManagementResetPassword;
+use App\Livewire\Auth\User\ForgotPassword;
+use App\Livewire\Auth\User\ResetPassword;
 use App\Livewire\Auth\User\UserAuth;
 use App\Livewire\Auth\User\UserRegister;
 use App\Livewire\Houses\HousesForm;
@@ -52,6 +58,8 @@ Route::group([
     'prefix' => 'admin'
 ], function () {
     Route::get('/login', AdminLogin::class)->name('admin.login');
+    Route::get('/forgot-password', AdminForgotPassword::class)->name('admin.forgotpassword');
+    Route::get('/reset-password/{token}', AdminResetPassword::class)->name('admin.resetpassword');
 });
 
 // ADMIN AUTH
@@ -113,6 +121,8 @@ Route::group([
     'prefix'     => 'management',
 ], function () {
     Route::get('/login', ManagementLogin::class)->name('management.login');
+    Route::get('/forgot-password', ManagementForgotPassword::class)->name('management.forgotpassword');
+    Route::get('/reset-password/{token}', ManagementResetPassword::class)->name('management.resetpassword');
 });
 
 // MANAGEMENT AUTH
@@ -159,6 +169,8 @@ Route::group([
 
     Route::get('/login', UserAuth::class)->name('user.login');
     Route::get('/register', UserRegister::class)->name('user.register');
+    Route::get('/forgot-password', ForgotPassword::class)->name('user.forgotpassword');
+    Route::get('/reset-password/{token}', ResetPassword::class)->name('user.resetpassword');
 });
 
 // USER AUTH

@@ -108,6 +108,7 @@ class BoardingHouse extends Component
                 });
             }
         ])
+            ->with('getRatings')
             ->when($this->search, function ($query3) {
                 $query3->where('houseName', 'LIKE', '%' . $this->search . '%');
             })
