@@ -31,7 +31,7 @@
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.9.1/mapbox-gl.css' rel='stylesheet' />
 </head>
 
-<body class="bg-gradient-primary min-vh-100 d-flex justify-content-center align-items-center">
+<body class="main-background-image min-vh-100 d-flex justify-content-center align-items-center">
     {{ $slot }}
 
     <!-- Scripts -->
