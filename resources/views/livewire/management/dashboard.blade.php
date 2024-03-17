@@ -83,7 +83,15 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Occupancy Rate
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $vacantRooms === 0 ? 0 : number_format(($occupiedRooms / $rooms) * 100, 2) }}%
+                                @if ($vacantRooms === 0)
+                                    @if ($rooms !== 0)
+                                        {{ number_format(($occupiedRooms / $rooms) * 100, 2) }}%
+                                    @else
+                                        0%
+                                    @endif
+                                @else
+                                    {{ number_format(($occupiedRooms / $rooms) * 100, 2) }}%
+                                @endif
                             </div>
                         </div>
                         <div class="col-auto">
