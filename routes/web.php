@@ -174,6 +174,7 @@ Route::group([
     Route::get('/register', UserRegister::class)->name('user.register');
     Route::get('/forgot-password', ForgotPassword::class)->name('user.forgotpassword');
     Route::get('/reset-password/{token}', ResetPassword::class)->name('user.resetpassword');
+    Route::get('/terms-and-conditions', TermAndCondition::class)->name('user.contactus');
 });
 
 // USER AUTH
@@ -183,7 +184,6 @@ Route::group([
 
     Route::get('/about-us', AboutUs::class)->name('user.contactus');
     Route::get('/contact-us', ContactUs::class)->name('user.contactus');
-    Route::get('/terms-and-conditions', TermAndCondition::class)->name('user.contactus');
     Route::get('/', Home::class)->name('user.home');
     Route::get('/boarding-houses/{id}', BoardingHouse::class)->name('user.home.boarding-house');
     Route::get('/boarding-houses/{id}/room-details/{roomId}', RoomDetails::class)->name('user.home.room-details');

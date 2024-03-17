@@ -7,7 +7,8 @@ use Livewire\Component;
 
 class TermAndCondition extends Component
 {
-    #[Layout('components.layouts.userAuth')]
+
+    #[Layout('components.layouts.userGuest')]
     public function render()
     {
         return view('livewire.user.term-and-condition');

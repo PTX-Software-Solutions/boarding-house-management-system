@@ -49,12 +49,16 @@
                                         </div>
                                     </div>
 
-                                    <div style="display: flex; justify-content: flex-start; align-items: center">
+                                    <div style="display: flex; justify-content: space-between; align-items: center">
                                         <div class="form-group">
                                             <div class="text-center">
                                                 <a class="small pointer" style="cursor: pointer"
                                                     wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
                                             </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <a href="/terms-and-conditions">Terms and Conditions</a>
                                         </div>
                                     </div>
 
