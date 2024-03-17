@@ -33,11 +33,14 @@ use App\Livewire\Management\ManagementBoardingHouseRoomForm;
 use App\Livewire\Management\ManagementConfirmation;
 use App\Livewire\Management\ManagementProfile;
 use App\Livewire\Management\ManagementReservation;
+use App\Livewire\User\AboutUs;
 use App\Livewire\User\BoardingHouse;
+use App\Livewire\User\ContactUs;
 use App\Livewire\User\Home;
 use App\Livewire\User\Profile;
 use App\Livewire\User\Reservation;
 use App\Livewire\User\RoomDetails;
+use App\Livewire\User\TermAndCondition;
 use App\Livewire\User\Transaction;
 use Illuminate\Support\Facades\Route;
 
@@ -178,6 +181,9 @@ Route::group([
     'middleware' => ['auth.user'],
 ], function () {
 
+    Route::get('/about-us', AboutUs::class)->name('user.contactus');
+    Route::get('/contact-us', ContactUs::class)->name('user.contactus');
+    Route::get('/terms-and-conditions', TermAndCondition::class)->name('user.contactus');
     Route::get('/', Home::class)->name('user.home');
     Route::get('/boarding-houses/{id}', BoardingHouse::class)->name('user.home.boarding-house');
     Route::get('/boarding-houses/{id}/room-details/{roomId}', RoomDetails::class)->name('user.home.room-details');
