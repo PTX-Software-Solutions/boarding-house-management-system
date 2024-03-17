@@ -3,9 +3,9 @@
     <div class="container my-auto">
         <div class="copyright text-center my-auto">
             <span>Copyright &copy; Dumaguete City Boarding House Finder and Reservation
-                {{ now()->year }}</span>
-            <a href="/contact-us">contact us</a>
-            <a href="/about-us">about us</a>
+                {{ now()->year }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="/contact-us">CONTACT US</a>&nbsp;&nbsp;&nbsp;&nbsp;
+            <a href="/about-us">ABOUT US</a>
         </div>
     </div>
 </footer>
