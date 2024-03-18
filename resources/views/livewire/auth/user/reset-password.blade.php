@@ -59,7 +59,7 @@
                                                 class="spinner-border mx-2" role="status">
                                                 <span class="sr-only mx-2">Loading...</span>
                                             </div>
-                                            {{ __('Send Email') }}
+                                            {{ __('Reset Password') }}
                                         </button>
                                     </div>
                                 </form>
