@@ -21,9 +21,8 @@ class ForgotPassword extends Component
     public function forgotPasswordEmail()
     {
         DB::beginTransaction();
-
+        $validated = $this->validate();
         try {
-            $validated = $this->validate();
 
             // Check if the email exists
             $userExists = User::where('email', $validated['email'])->first();
