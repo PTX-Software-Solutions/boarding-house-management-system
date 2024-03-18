@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" style="opacity: .9">
     <div class="row justify-content-center">
         <div class="col-xl-10 col-lg-12 col-md-9">
             <div class="card o-hidden border-0 shadow-lg my-5">
@@ -59,7 +59,7 @@
                                                 class="spinner-border mx-2" role="status">
                                                 <span class="sr-only mx-2">Loading...</span>
                                             </div>
-                                            {{ __('Send Email') }}
+                                            {{ __('Reset Password') }}
                                         </button>
                                     </div>
                                 </form>
