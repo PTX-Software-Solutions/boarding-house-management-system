@@ -10,9 +10,16 @@
             <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                 <div class="carousel-inner">
                     @foreach ($room->getRoomImages as $key => $image)
-                        <div class="carousel-item {{ $key === 0 ? 'active' : '' }}" style="width: 100%; height: 60vh;">
+                        @php
+                            // Calculate aspect ratio of the image
+                            $aspectRatio = 300 / 150;
+                            // Calculate height of the container based on the aspect ratio
+                            $containerHeight = 50 / $aspectRatio;
+                        @endphp
+                        <div class="carousel-item {{ $key === 0 ? 'active' : '' }}"
+                            style="width: 100%; height: {{ $containerHeight }}vw;">
                             <img src="{{ asset('storage/images/' . $image->imageUrl) }}" class="d-block rounded"
-                                style="width: 100%; height: 100%; object-fit:cover;" alt="...">
+                                style="width: 100%; height: 100%; object-fit: contain;" alt="...">
                         </div>
                     @endforeach
                 </div>
