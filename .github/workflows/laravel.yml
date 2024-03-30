@@ -45,5 +45,5 @@ jobs:
         with:
           server: ftp.finderbh.com
           username: u966549182
-          password: Bhfinder123!
+          password: BoardingHouseLocator1!
           server-dir: /home/u966549182/domains/finderbh.com/public_html/
