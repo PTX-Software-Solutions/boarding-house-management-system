@@ -44,7 +44,7 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.0.0
       with:
-        server: ftp://45.130.228.229
+        server: ftp://finderbh.com
         username: u966549182
-        password: Qwertyuiop1!
+        password: Bhfinder123!
         server-dir: /public_html/
