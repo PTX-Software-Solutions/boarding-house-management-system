@@ -46,4 +46,4 @@ jobs:
           server: ftp.finderbh.com
           username: u966549182.production
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /home/u966549182/domains/finderbh.com/public_html
+          server-dir: /home/u966549182/domains/finderbh.com/public_html/
