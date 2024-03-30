@@ -1,7 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Reservations') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Reservations') }}</h1>
     <span class="text-danger">Automatically cancel already passed check-in dates</span>
 
     <table class="table">
@@ -15,7 +15,7 @@
                 <th scope="col" class="text-center">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white">
             @forelse ($reservations as $reservation)
                 <tr wire:key="{{ $reservation->id }}">
                     <td>{{ $reservation->getHouse->houseName }}</td>
@@ -41,7 +41,7 @@
             @empty
                 <tr>
                     <td colspan="5">
-                        <p class="text-center">No results found!</p>
+                        <p class="text-center text-white">No results found!</p>
                     </td>
                 </tr>
             @endforelse

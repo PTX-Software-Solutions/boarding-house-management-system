@@ -1,7 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Transactions') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Transactions') }}</h1>
 
     <table class="table">
         <thead class="thead-light">
@@ -14,7 +14,7 @@
                 <th scope="col" class="text-center">Rate</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white">
             @forelse ($reservations as $reservation)
                 <tr wire:key="{{ $reservation->id }}">
                     <td>{{ $reservation->getHouse->houseName }}</td>

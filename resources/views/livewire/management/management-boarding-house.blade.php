@@ -1,7 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Boarding House') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Boarding House') }}</h1>
 
     <div class="d-flex justify-content-end">
         <button wire:click="createBoardingHouse"
@@ -43,7 +43,7 @@
                 <th scope="col">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white">
             @forelse ($boardingHouses as $boardingHouse)
                 <tr wire:key="{{ $boardingHouse->id }}">
                     <th scope="row">{{ $boardingHouse->houseName }}</th>

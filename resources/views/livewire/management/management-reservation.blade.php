@@ -1,7 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Reservations') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Reservations') }}</h1>
 
     <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -34,7 +34,7 @@
                 <th scope="col" class="text-center">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white">
             @forelse ($reservations as $reservation)
                 <tr wire:key="{{ $reservation->id }}">
                     <th scope="row">{{ $reservation->getUser->firstName }} {{ $reservation->getUser->lastName }}</th>

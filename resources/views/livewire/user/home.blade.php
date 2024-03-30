@@ -1,6 +1,6 @@
 <div>
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Find Nearest Boarding House') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Find Nearest Boarding House') }}</h1>
 
     @if (session('success'))
         <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
@@ -17,13 +17,13 @@
         </div>
     @endif
 
-    <div class="row">
-        <div class="col-lg-8">
-            <div class="card shadow mb-4">
-                <div class="form-row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
+    <div class="row" style="min-height: 100vh">
+        <div class="col-lg-8" style="height: 100%">
+            <div class="card shadow mb-4" style="height: 100%">
+                <div class="form-row" style="height: 100%">
+                    <div class="col-md-12" style="height: 100%">
+                        <div class="card" style="height: 100%">
+                            <div class="card-header" style="height: 100%">
                                 <div class="d-flex justify-content-between">
                                     <span>
                                         <i class="fa fa-map" aria-hidden="true"></i>
@@ -34,12 +34,11 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body" style="height: 100%">
                                 @if (!$longitude && !$latitude && !$isSearchClicked)
                                     <p class="text-center font-weight-bold">PLEASE SEARCH YOUR LOCATION</p>
                                 @endif
-                                <div wire:ignore.self id='map' style='width: 100%; min-height: 760px;'
-                                    wire:ignore>
+                                <div wire:ignore.self id='map' style='width: 100%; min-height: 100vh' wire:ignore>
                                 </div>
                             </div>
                         </div>
@@ -60,9 +59,8 @@
                             </div>
                         </div>
                         @if ($isDisplayResult && !$isSearchClicked)
-                            <div class="bg-secondary rounded"
-                                style="position:absolute; z-index: 100; width: 100%; 
-                                max-height: 300px; overflow-y: auto;">
+                            <div class="bg-secondary rounded shadow"
+                                style="max-height: 300px; overflow-y: auto; box-shadow: 5px 5px 5px 5px #333;">
                                 <div class="list-group">
                                     @if ($search)
                                         @forelse ($locations['features'] as $location)

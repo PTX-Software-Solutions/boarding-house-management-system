@@ -1,5 +1,5 @@
 <div>
-    <h1 class="h3 mb-4 text-gray-800">{{ __('My Account') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('My Account') }}</h1>
 
     @if (session('success'))
         <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">

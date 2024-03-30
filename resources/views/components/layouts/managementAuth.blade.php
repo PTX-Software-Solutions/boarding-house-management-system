@@ -11,7 +11,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ 'BH Finder & Reservation' }}</title>
+    <title>{{ 'BH Locator & Reservation' }}</title>
 
     <!-- Fonts -->
     <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
@@ -37,7 +37,9 @@
         @include('components.management.sidebar')
 
         <!-- Content Wrapper -->
-        <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content-wrapper"
+            style="background-image: linear-gradient(to right, #03045e,#023e8a,#0077b6,#0096c7,#00b4d8, #48cae4, #90e0ef, #ade8f4, #caf0f8);"
+            class="d-flex flex-column">
 
             <!-- Main Content -->
             <div id="content">

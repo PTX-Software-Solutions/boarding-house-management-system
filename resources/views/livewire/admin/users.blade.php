@@ -1,7 +1,7 @@
 <div>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Users') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Users') }}</h1>
 
     <div class="d-flex justify-content-end">
         <button wire:click="createUser" class="bg-primary text-white border-radius px-3 py-2
@@ -41,7 +41,7 @@
                 <th scope="col">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white">
             @forelse ($users as $user)
                 <tr wire:key="{{ $user->id }}">
                     <th scope="row">{{ $user->firstName }} {{ $user->lastName }}</th>

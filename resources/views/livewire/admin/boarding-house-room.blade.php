@@ -4,7 +4,7 @@
         Back</button>
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ __('Rooms') }}</h1>
+    <h1 class="h3 mb-4 text-white">{{ __('Rooms') }}</h1>
 
     <div class="d-flex justify-content-between align-items-center">
         <div>
@@ -31,7 +31,7 @@
                 <th scope="col">Action</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody style="color: white;">
             @forelse ($rooms as $room)
                 <tr wire:key="{{ $room->id }}">
                     <th scope="row">{{ $room->name }}</th>
