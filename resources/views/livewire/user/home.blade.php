@@ -38,7 +38,8 @@
                                 @if (!$longitude && !$latitude && !$isSearchClicked)
                                     <p class="text-center font-weight-bold">PLEASE SEARCH YOUR LOCATION</p>
                                 @endif
-                                <div wire:ignore.self id='map' style='width: 100%; min-height: 760px;' wire:ignore>
+                                <div wire:ignore.self id='map' style='width: 100%; min-height: 760px;'
+                                    wire:ignore>
                                 </div>
                             </div>
                         </div>

@@ -8,30 +8,17 @@
                         <div class="col-lg-6">
                             <div class="p-5">
                                 <div class="text-center">
-                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Login') }}</h1>
-                                </div>
-
-                                <div>
-                                    @error('login')
-                                        <div class="alert alert-danger border-left-danger">
-                                            <p class="text-danger">{{ $message }}</p>
-                                        </div>
-                                    @enderror
+                                    <h1 class="h4 text-gray-900 mb-4">{{ __('Your email has been verified') }}</h1>
                                 </div>
 
                                 @if (session('status'))
-                                    <div class="alert alert-success border-left-success">
+                                    <div class="alert alert-success">
                                         {{ session('status') }}
                                     </div>
                                 @endif
 
-                                @if (session('user-banned'))
-                                    <div class="alert alert-danger border-left-danger">
-                                        {{ session('user-banned') }}
-                                    </div>
-                                @endif
-
-                                <form wire:submit="login" wire:keydown.enter="login" class="user" autocomplete="off">
+                                <form wire:submit="forgotPasswordEmail" wire:keydown.enter="forgotPasswordEmail"
+                                    class="user" autocomplete="off">
                                     <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                                     <div class="form-group">
@@ -46,29 +33,6 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="password" class="form-control form-control-user"
-                                            wire:model="password" name="password" placeholder="{{ __('Password') }}">
-                                        <div>
-                                            @error('password')
-                                                <p class="text-danger">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div style="display: flex; justify-content: space-between; align-items: center">
-                                        <div class="form-group">
-                                            <div class="text-center">
-                                                <a class="small pointer" style="cursor: pointer"
-                                                    wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <a href="/terms-and-conditions">Terms and Conditions</a>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-group">
                                         <button type="submit"
                                             class="btn btn-primary btn-user btn-block 
                                         d-flex justify-content-center align-items-center">
@@ -77,7 +41,7 @@
                                                 class="spinner-border mx-2" role="status">
                                                 <span class="sr-only mx-2">Loading...</span>
                                             </div>
-                                            {{ __('Login') }}
+                                            {{ __('Send Email') }}
                                         </button>
                                     </div>
                                 </form>
@@ -87,7 +51,7 @@
                                 @if (Route::has('user.register'))
                                     <div class="text-center">
                                         <a class="small pointer" style="cursor: pointer"
-                                            wire:click="register">{{ __('Create an Account!') }}</a>
+                                            wire:click="login">{{ __('Login Account!') }}</a>
                                     </div>
                                 @endif
                             </div>
@@ -101,7 +65,7 @@
 
 <script data-navigate-track>
     function houseTableEvents() {
-        Livewire.on('success-login', (event) => {
+        Livewire.on('success-email', (event) => {
             const Toast = Swal.mixin({
                 toast: true,
                 position: "top-end",
@@ -115,7 +79,7 @@
             });
             Toast.fire({
                 icon: "success",
-                title: "Login successfully"
+                title: "Send email successfully"
             }).then(() => {
                 @this.dispatch('login-success')
             });

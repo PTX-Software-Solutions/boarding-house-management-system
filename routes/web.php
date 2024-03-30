@@ -19,6 +19,7 @@ use App\Livewire\Auth\Admin\ResetPassword as AdminResetPassword;
 use App\Livewire\Auth\Management\ForgotPassword as ManagementForgotPassword;
 use App\Livewire\Auth\Management\ManagementLogin;
 use App\Livewire\Auth\Management\ResetPassword as ManagementResetPassword;
+use App\Livewire\Auth\User\EmailVerification;
 use App\Livewire\Auth\User\ForgotPassword;
 use App\Livewire\Auth\User\ResetPassword;
 use App\Livewire\Auth\User\UserAuth;
@@ -175,11 +176,12 @@ Route::group([
     Route::get('/forgot-password', ForgotPassword::class)->name('user.forgotpassword');
     Route::get('/reset-password/{token}', ResetPassword::class)->name('user.resetpassword');
     Route::get('/terms-and-conditions', TermAndCondition::class)->name('user.contactus');
+    Route::get('/email/verify', [EmailVerification::class, 'verify'])->name('verification.verify');
 });
 
 // USER AUTH
 Route::group([
-    'middleware' => ['auth.user'],
+    'middleware' => ['auth.user', 'auth.isBanned'],
 ], function () {
 
     Route::get('/about-us', AboutUs::class)->name('user.contactus');

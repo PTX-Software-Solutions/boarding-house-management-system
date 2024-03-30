@@ -40,7 +40,7 @@ class Kernel extends HttpKernel
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+            \Illuminate\Routing\Middleware\ThrottleRequests::class . ':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
@@ -68,6 +68,7 @@ class Kernel extends HttpKernel
         'auth.management' => \App\Http\Middleware\ManagementAuthMiddleware::class,
         'guest.management' => \App\Http\Middleware\ManagementGuestMiddleware::class,
         'auth.user' =>  \App\Http\Middleware\UserAuthMiddleware::class,
+        'auth.isBanned' => \App\Http\Middleware\IsUserNotBanned::class,
         'guest.user' => \App\Http\Middleware\UserGuestMiddleware::class,
     ];
 }

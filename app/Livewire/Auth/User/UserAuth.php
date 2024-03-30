@@ -55,6 +55,11 @@ class UserAuth extends Component
                 return;
             }
 
+            if (!$user->email_verified_at) {
+                $this->addError('login', "This message indicates the email address has not already verified, Check your email");
+                return;
+            }
+
             // Authenticate the user
             if (Auth::guard('web')->attempt([
                 'email' => $this->email,

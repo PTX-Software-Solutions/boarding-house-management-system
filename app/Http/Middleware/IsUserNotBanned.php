@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class UserAuthMiddleware
+class IsUserNotBanned
 {
     /**
      * Handle an incoming request.
@@ -16,13 +16,13 @@ class UserAuthMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guard('web')->check()) {
-            if (Auth::guard('web')->user()->email_verified_at) {
-                return $next($request);
-            }
+        if (Auth::guard('web')->user()->isBanned()) {
+            Auth::guard('web')->logout();
+            $request->session()->regenerateToken();
+            return redirect()->route('user.login')
+                ->with('user-banned', "Your account has been banned!");
         }
 
-
-        return redirect()->route('user.login');
+        return $next($request);
     }
 }

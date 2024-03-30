@@ -111,7 +111,13 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block 
+                                        d-flex justify-content-center align-items-center">
+                                            <div wire:loading wire:loading.class="opacity-50 disabled"
+                                                wire:loading.attr="disabled" wire:target="save"
+                                                class="spinner-border mx-2" role="status">
+                                                <span class="sr-only mx-2">Loading...</span>
+                                            </div>
                                             {{ __('Register') }}
                                         </button>
                                     </div>
@@ -140,7 +146,7 @@
                 toast: true,
                 position: "top-end",
                 showConfirmButton: false,
-                timer: 1000,
+                timer: 3000,
                 timerProgressBar: true,
                 didOpen: (toast) => {
                     toast.onmouseenter = Swal.stopTimer;
@@ -149,7 +155,7 @@
             });
             Toast.fire({
                 icon: "success",
-                title: "Register successfully"
+                title: "Register successfully, Check and verify your email"
             }).then(() => {
                 @this.dispatch('register-success')
             });

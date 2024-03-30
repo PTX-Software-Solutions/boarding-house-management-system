@@ -5,14 +5,17 @@ namespace App\Livewire\Auth\User;
 use App\Enums\StatusEnums;
 use App\Enums\UserTypeEnums;
 use App\Livewire\Forms\User\RegistrationForm;
+use App\Mail\RegisterMail;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\UserType;
 use Exception;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
@@ -69,7 +72,7 @@ class UserRegister extends Component
     #[On('register-success')]
     public function home()
     {
-        return $this->redirect('/', navigate: true);
+        return $this->redirect('/login', navigate: true);
     }
 
     public function save()
@@ -109,10 +112,15 @@ class UserRegister extends Component
                 'password'      => Hash::make($validated['password']),
                 'userTypeId'    => $userDefaultType->id,
                 'statusId'      => $userDefaultStatus->id,
+                'remember_token' => Str::random(40),
                 'profileImage'  => $this->uploadImage($validated['profileImage'])
             ]);
 
-            Auth::guard('web')->login($user);
+            Mail::to($validated['email'])->send(new RegisterMail($user));
+            session()->flash(
+                'email-verification-message',
+                'Your account registered successfully and check your email for verification.'
+            );
             $this->dispatch('success-register');
 
             DB::commit();
