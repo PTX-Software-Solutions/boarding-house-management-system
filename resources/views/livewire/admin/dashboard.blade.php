@@ -44,7 +44,7 @@
                 <div class="card-body">
                     <div class="row no-gutters align-items-center">
                         <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Net Profit (Overall)
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">Reservation Payment ({{ now()->format('F') }})
                             </div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
                                 &#8369;{{ number_format($houses * $amountPerAccount, 2) }}</div>
