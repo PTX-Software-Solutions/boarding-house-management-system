@@ -34,6 +34,8 @@ class UserRegister extends Component
 
     public $email;
 
+    public $phoneNumber;
+
     public $password;
 
     public $password_confirmation;
@@ -82,6 +84,7 @@ class UserRegister extends Component
                 'firstName' => $this->firstName,
                 'lastName'  => $this->lastName,
                 'email'     => $this->email,
+                'phoneNumber'     => $this->phoneNumber,
                 'password'     => $this->password,
                 'password_confirmation'     => $this->password_confirmation,
                 'profileImage'     => $this->profileImage,
@@ -90,6 +93,7 @@ class UserRegister extends Component
                 'firstName' => 'required',
                 'lastName'  => 'required',
                 'email'     => 'required|email|unique:users',
+                'phoneNumber' => ['required', 'regex:/^(09|\+639)\d{9}$/', 'unique:users,phoneNumber'],
                 'password'     => 'required|min:6',
                 'password_confirmation' => 'same:password',
                 'profileImage'     => 'mimes:png,jpeg,jpg|max:2048',
@@ -109,6 +113,7 @@ class UserRegister extends Component
                 'firstName'     => $validated['firstName'],
                 'lastName'      => $validated['lastName'],
                 'email'         => $validated['email'],
+                'phoneNumber'   => $validated['phoneNumber'],
                 'password'      => Hash::make($validated['password']),
                 'userTypeId'    => $userDefaultType->id,
                 'statusId'      => $userDefaultStatus->id,

@@ -55,6 +55,16 @@
                                     </div>
 
                                     <div class="form-group">
+                                        <input type="text" class="form-control form-control-user" wire:model="phoneNumber"
+                                            placeholder="{{ __('Phone Number (Ex: +639********* or 09*********)') }}">
+                                        <div>
+                                            @error('phoneNumber')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
                                         <input type="password" class="form-control form-control-user"
                                             wire:model="password" placeholder="{{ __('Password') }}">
                                         <div>

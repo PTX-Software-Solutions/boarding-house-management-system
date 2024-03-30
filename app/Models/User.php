@@ -27,7 +27,8 @@ class User extends Authenticatable
         'profileImage',
         'userTypeId',
         'statusId',
-        'remember_token'
+        'remember_token',
+        'phoneNumber'
     ];
 
     protected $table = 'users';
