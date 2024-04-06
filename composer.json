@@ -52,7 +52,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests/"
+            "Tests\\": "tests/",
+            "Tests\\Livewire\\User\\": "tests/Livewire/User/"
         }
     },
     "minimum-stability": "dev",
