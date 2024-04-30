@@ -20,12 +20,18 @@ class House extends Model
         'city',
         'zip',
         'longitude',
-        'latitude'
+        'latitude',
+        'paymentTypeId'
     ];
 
     public function getUser()
     {
         return $this->belongsTo(User::class, 'userId');
+    }
+
+    public function getPaymentType()
+    {
+        return $this->belongsTo(PaymentType::class, 'paymentTypeId');
     }
 
     public function nearbyAttraction()

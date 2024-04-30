@@ -159,6 +159,27 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        <label for="city">Select Payment Type</label>
+                                        <div class="form-group">
+                                            <select class="form-control" wire:model="paymentType">
+                                                <option>-- Select type --</option>
+                                                @foreach ($paymentTypes as $payment)
+                                                    <option value="{{ $payment->id }}"
+                                                        {{ $paymentType === $payment->id ? 'selected' : '' }}>
+                                                        {{ $payment->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            @error('paymentType')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+                                </div>
 
                                 {{-- <div class="form-group col-md-12">
                                     <div class="form-group" wire:ignore>

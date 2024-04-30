@@ -7,6 +7,7 @@ use App\Models\DistanceTypes;
 use App\Models\House;
 use App\Models\HouseImage;
 use App\Models\NearbyAttraction;
+use App\Models\PaymentType;
 use App\Models\SocialMedia;
 use App\Models\SocialMediaType;
 use App\Models\User;
@@ -40,6 +41,8 @@ class BoardingHouseForm extends Component
 
     public $zip = '';
 
+    public $paymentType = '';
+
     public $uploadImage;
 
     public $oldImage = [];
@@ -70,6 +73,7 @@ class BoardingHouseForm extends Component
             'address2' => 'nullable',
             'city' => 'required',
             'zip' => 'required',
+            'paymentType' => 'required',
             'uploadImage'   => 'nullable',
             'uploadImage.*' => 'nullable|max:1024',
             'attractionLists' => 'required|array',
@@ -168,6 +172,7 @@ class BoardingHouseForm extends Component
         $this->zip = $house->zip;
         $this->longitude = $house->longitude;
         $this->latitude = $house->latitude;
+        $this->paymentType = $house->paymentTypeId;
         $this->isEditMode = true;
 
         // Get the NearbyAttraction
@@ -254,7 +259,8 @@ class BoardingHouseForm extends Component
                     'city'  => $data['city'],
                     'zip'  => $data['zip'],
                     'longitude' => $this->longitude,
-                    'latitude' => $this->latitude
+                    'latitude' => $this->latitude,
+                    'paymentTypeId' => $data['paymentType'],
                 ]);
 
                 // Remove all existing nearby attractions and insert new data
@@ -321,7 +327,8 @@ class BoardingHouseForm extends Component
                     'city'  => $data['city'],
                     'zip'  => $data['zip'],
                     'longitude' => $this->longitude,
-                    'latitude' => $this->latitude
+                    'latitude' => $this->latitude,
+                    'paymentTypeId' => $data['paymentType'],
                 ]);
 
                 if (!empty($data['attractionLists'])) {
@@ -401,10 +408,13 @@ class BoardingHouseForm extends Component
             )
             ->get();
 
+        $paymentTypes = PaymentType::select('id', 'name')->orderBy('serial_id', 'ASC')->get();
+
         return view('livewire.admin.boarding-house-form', [
             'homeOwners'        => $homeOwners,
             'distanceTypes'     => $distanceTypes,
             'socialMediaTypes'  => $socialMediaTypes,
+            'paymentTypes'      => $paymentTypes,
         ]);
     }
 }

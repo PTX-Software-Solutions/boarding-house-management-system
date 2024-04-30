@@ -128,7 +128,8 @@ class RoomDetails extends Component
                 $query1->select(
                     'id',
                     'userId',
-                    'contact'
+                    'contact',
+                    'paymentTypeId'
                 )
                     ->with(['getUser' => function ($query2) {
                         $query2->select(
@@ -164,6 +165,12 @@ class RoomDetails extends Component
                                     'serial_id'
                                 );
                             }]);
+                    }, 'getPaymentType' => function ($query5) {
+                        $query5->select(
+                            'id',
+                            'serial_id',
+                            'name'
+                        );
                     }]);
             }, 'amenities',
             'getRoomUtilities' => function ($query6) {

@@ -159,10 +159,15 @@
                                 <p>{{ $room->getPaymentAgreement->name }}</p>
                                 <span><span>&#8369; {{ number_format($total, 2) }}</span></span>
                             </div>
-                            {{-- <div class="d-flex justify-content-between">
-                                <p>Total Monthly Deposit</p>
-                                <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
-                            </div> --}}
+                            <div class="d-flex justify-content-between">
+                                <p>Accept payment through</p>
+                                <div style="display: flex; flex-direction: column;">
+                                    <span>{{ $room->getHouse->getPaymentType->name }}</span>
+                                    @if ($room->getHouse->getPaymentType->serial_id === 1 || $room->getHouse->getPaymentType->serial_id === 3)
+                                        <span>{{ $room->getHouse->contact }}</span>
+                                    @endif
+                                </div>
+                            </div>
                             {{-- <div class="d-flex justify-content-between">
                                 <p>One Month Advance</p>
                                 <span><span>&#8369; {{ number_format($room->monthlyDeposit, 2) }}</span></span>
