@@ -1,4 +1,43 @@
 <div>
+    <style>
+        .help-tip {
+            font-size: 25px;
+            cursor: pointer;
+            /* Indicate hover interaction */
+        }
+
+        .popup-text {
+            position: absolute;
+            background-color: #f2f2f2;
+            /* Light background for better readability */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            opacity: 0;
+            /* Initially hidden */
+            transition: opacity 0.3s ease-in-out;
+            /* Smooth fade-in animation */
+        }
+
+        /* .popup-text {
+            position: absolute;
+            background-color: #f2f2f2;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            top: calc(100% + 5px);
+            left: 50%;
+            transform: translateX(-50%);
+        } */
+
+        .help-tip:hover+.popup-text {
+            opacity: 1;
+            /* Show popup on hover */
+        }
+    </style>
+
     <button wire:click="back" class="btn btn-sm btn-primary mb-3"><i class="fa fa-chevron-left" aria-hidden="true"></i>
         Back</button>
 
@@ -161,12 +200,22 @@
                             </div>
                             @if ($room->getHouse->getPaymentType)
                                 <div class="d-flex justify-content-between">
-                                    <p>Accept payment through</p>
-                                    <div style="display: flex; flex-direction: column;">
-                                        <span>{{ $room->getHouse->getPaymentType->name }}</span>
-                                        @if ($room->getHouse->getPaymentType->serial_id === 1 || $room->getHouse->getPaymentType->serial_id === 3)
-                                            <span>{{ $room->getHouse->contact }}</span>
-                                        @endif
+                                    <div>
+                                        <div style="display: flex; flex-direction: column;">
+                                            <small>Accept payment through:</small>
+                                            <small>{{ $room->getHouse->getPaymentType->name }}</small>
+                                            @if ($room->getHouse->getPaymentType->serial_id === 1 || $room->getHouse->getPaymentType->serial_id === 3)
+                                                <small>{{ $room->getHouse->contact }}</small>
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <i class="fa fa-info-circle help-tip" aria-hidden="true"></i>
+
+                                        <div class="popup-text" style="margin-left: -200px">
+                                            <small>Please contact the management first before doing the
+                                                transaction.</small>
+                                        </div>
                                     </div>
                                 </div>
                             @endif

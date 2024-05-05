@@ -62,10 +62,6 @@
                                                     wire:click="forgotPassword">{{ __('Forgot Password') }}</a>
                                             </div>
                                         </div>
-
-                                        <div class="form-group">
-                                            <a href="/terms-and-conditions">Terms and Conditions</a>
-                                        </div>
                                     </div>
 
                                     <div class="form-group">

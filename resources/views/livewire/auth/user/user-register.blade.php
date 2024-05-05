@@ -55,10 +55,27 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <input type="text" class="form-control form-control-user" wire:model="phoneNumber"
+                                        <input type="text" class="form-control form-control-user"
+                                            wire:model="phoneNumber"
                                             placeholder="{{ __('Phone Number (Ex: +639********* or 09*********)') }}">
                                         <div>
                                             @error('phoneNumber')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <select class="form-control" wire:model="userRole">
+                                            <option>-- Select type --</option>
+                                            @foreach ($user_roles as $role)
+                                                <option value="{{ $role->id }}">
+                                                    {{ $role->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        <div>
+                                            @error('userRole')
                                                 <p class="text-danger">{{ $message }}</p>
                                             @enderror
                                         </div>
@@ -121,7 +138,18 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-user btn-block 
+                                        <input type="checkbox" wire:model="termsAndCondition">
+                                        <a href="/terms-and-conditions" target="_blank">Terms and Conditions</a>
+                                        <div>
+                                            @error('termsAndCondition')
+                                                <p class="text-danger">{{ $message }}</p>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <button type="submit"
+                                            class="btn btn-primary btn-user btn-block 
                                         d-flex justify-content-center align-items-center">
                                             <div wire:loading wire:loading.class="opacity-50 disabled"
                                                 wire:loading.attr="disabled" wire:target="save"

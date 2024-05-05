@@ -8,6 +8,7 @@ use App\Livewire\Forms\User\RegistrationForm;
 use App\Mail\RegisterMail;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\UserRole;
 use App\Models\UserType;
 use Exception;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +36,10 @@ class UserRegister extends Component
     public $email;
 
     public $phoneNumber;
+
+    public $userRole;
+
+    public $termsAndCondition;
 
     public $password;
 
@@ -85,18 +90,22 @@ class UserRegister extends Component
                 'lastName'  => $this->lastName,
                 'email'     => $this->email,
                 'phoneNumber'     => $this->phoneNumber,
+                'userRole'    => $this->userRole,
                 'password'     => $this->password,
                 'password_confirmation'     => $this->password_confirmation,
                 'profileImage'     => $this->profileImage,
+                'termsAndCondition' => $this->termsAndCondition,
             ],
             [
                 'firstName' => 'required',
                 'lastName'  => 'required',
                 'email'     => 'required|email|unique:users',
                 'phoneNumber' => ['required', 'regex:/^(09|\+639)\d{9}$/', 'unique:users,phoneNumber'],
+                'userRole'    => 'required',
                 'password'     => 'required|min:6',
                 'password_confirmation' => 'same:password',
                 'profileImage'     => 'mimes:png,jpeg,jpg|max:2048',
+                'termsAndCondition' => 'accepted'
             ],
         )->validate();
 
@@ -114,6 +123,7 @@ class UserRegister extends Component
                 'lastName'      => $validated['lastName'],
                 'email'         => $validated['email'],
                 'phoneNumber'   => $validated['phoneNumber'],
+                'userRoleId'   => $validated['userRole'],
                 'password'      => Hash::make($validated['password']),
                 'userTypeId'    => $userDefaultType->id,
                 'statusId'      => $userDefaultStatus->id,
@@ -144,6 +154,8 @@ class UserRegister extends Component
     #[Layout('components.layouts.userGuest')]
     public function render()
     {
-        return view('livewire.auth.user.user-register');
+        return view('livewire.auth.user.user-register', [
+            'user_roles' => UserRole::select('id', 'name')->get(),
+        ]);
     }
 }

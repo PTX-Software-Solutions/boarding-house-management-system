@@ -4,6 +4,8 @@ namespace App\Livewire\User;
 
 use App\Enums\StatusEnums;
 use App\Livewire\User\Reservation as UserReservation;
+use App\Mail\ManagementReservationNotification;
+use App\Models\House;
 use App\Models\Reservation;
 use App\Models\Room;
 use App\Models\Status;
@@ -11,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Rule;
 use Livewire\Attributes\Url;
@@ -75,6 +78,12 @@ class RoomDetails extends Component
 
     public function save()
     {
+        $home = House::with(['getUser' => function ($query) {
+            $query->select('id', 'email');
+        }])
+            ->select('userId')
+            ->where('id', $this->houseId)
+            ->first();
 
         $data = $this->validate();
 
@@ -95,7 +104,7 @@ class RoomDetails extends Component
 
         try {
             $statusDefault = Status::where('serial_id', StatusEnums::PENDING)->first();
-            Reservation::create([
+            $reservation = Reservation::create([
                 'userId'    => Auth::id(),
                 'houseId'   => $this->houseId,
                 'roomId'    => $this->roomId,
@@ -104,6 +113,8 @@ class RoomDetails extends Component
                 'checkOut'  => $data['checkOut'],
                 'note'      => $data['note']
             ]);
+
+            Mail::to($home->getUser->email)->send(new ManagementReservationNotification(Auth::user(), $reservation));
 
 
             $this->dispatch('success-reservation')->to(UserReservation::class);

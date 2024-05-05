@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             RoomUtilityScopeSeeder::class,
             RoomUtilityTypeSeeder::class,
             PaymentTypesSeeder::class,
+            UserRoleSeeder::class,
         ]);
     }
 }
