@@ -26,5 +26,4 @@ class DatabaseSeeder extends Seeder
             UserRoleSeeder::class,
         ]);
     }
-    
 }
