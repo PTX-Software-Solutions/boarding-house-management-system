@@ -25,5 +25,7 @@ class DatabaseSeeder extends Seeder
             PaymentTypesSeeder::class,
             UserRoleSeeder::class,
         ]);
+
+        
     }
 }
