@@ -131,11 +131,24 @@ class UserRegister extends Component
                 'profileImage'  => $this->uploadImage($validated['profileImage'])
             ]);
 
-            Mail::to($validated['email'])->send(new RegisterMail($user));
-            session()->flash(
-                'email-verification-message',
-                'Your account registered successfully and check your email for verification.'
-            );
+            try {
+                Mail::to($validated['email'])->send(new RegisterMail($user));
+                session()->flash(
+                    'email-verification-message',
+                    'Your account registered successfully! Check your email for verification.'
+                );
+            } catch (Exception $emailError) {
+                Log::warning('Registration email failed to send', [
+                    'user_id' => $user->id,
+                    'email' => $validated['email'],
+                    'error' => $emailError->getMessage()
+                ]);
+                session()->flash(
+                    'email-verification-message',
+                    'Your account registered successfully! However, we couldn\'t send the verification email. Please contact support if needed.'
+                );
+            }
+            
             $this->dispatch('success-register');
 
             DB::commit();
