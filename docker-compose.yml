@@ -1,0 +1,102 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: boarding-house-app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html
+            - ./docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+        ports:
+            - "8000:80"
+        networks:
+            - boarding-house-network
+        depends_on:
+            - db
+            - redis
+        environment:
+            - DB_CONNECTION=mysql
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=boarding_house
+            - DB_USERNAME=root
+            - DB_PASSWORD=password
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - MAIL_MAILER=smtp
+            - MAIL_HOST=smtp.mailtrap.io
+            - MAIL_PORT=2525
+            - MAIL_USERNAME=your_mailtrap_username
+            - MAIL_PASSWORD=your_mailtrap_password
+            - MAIL_ENCRYPTION=tls
+
+    # MySQL Database
+    db:
+        image: mysql:8.0
+        container_name: boarding-house-db
+        restart: unless-stopped
+        environment:
+            MYSQL_DATABASE: boarding_house
+            MYSQL_ROOT_PASSWORD: password
+            MYSQL_PASSWORD: password
+            MYSQL_USER: laravel
+        volumes:
+            - db_data:/var/lib/mysql
+            - ./docker/mysql/my.cnf:/etc/mysql/my.cnf
+        ports:
+            - "3306:3306"
+        networks:
+            - boarding-house-network
+
+    # Redis Cache
+    redis:
+        image: redis:7-alpine
+        container_name: boarding-house-redis
+        restart: unless-stopped
+        ports:
+            - "6379:6379"
+        volumes:
+            - redis_data:/data
+        networks:
+            - boarding-house-network
+
+    # phpMyAdmin
+    phpmyadmin:
+        image: phpmyadmin:latest
+        container_name: boarding-house-phpmyadmin
+        restart: unless-stopped
+        environment:
+            PMA_HOST: db
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        ports:
+            - "8080:80"
+        networks:
+            - boarding-house-network
+        depends_on:
+            - db
+
+    # Node.js for asset compilation
+    node:
+        image: node:18-alpine
+        container_name: boarding-house-node
+        working_dir: /var/www/html
+        volumes:
+            - ./:/var/www/html
+        command: sh -c "npm install && npm run watch"
+        networks:
+            - boarding-house-network
+        profiles:
+            - dev
+
+networks:
+    boarding-house-network:
+        driver: bridge
+
+volumes:
+    db_data:
+        driver: local
+    redis_data:
+        driver: local
